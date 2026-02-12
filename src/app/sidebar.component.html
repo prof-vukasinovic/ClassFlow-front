@@ -1,0 +1,25 @@
+<div class="sidebar">
+
+  <button (click)="toggleStudents()">
+    Liste des élèves
+  </button>
+
+  <div class="dropdown" [class.hidden]="!showStudents">
+
+    <input
+      type="text"
+      placeholder="Rechercher..."
+      [(ngModel)]="searchTerm"
+    />
+
+    <div
+      class="student"
+      *ngFor="let eleve of filteredStudents()"
+      (click)="studentSelected.emit(eleve)"
+    >
+      {{ eleve.prenom }} {{ eleve.nom }}
+    </div>
+
+  </div>
+
+</div>

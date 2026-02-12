@@ -1,0 +1,23 @@
+<h1 *ngIf="classroom">
+  {{ classroom.classRoomNom }}
+</h1>
+
+<h2>Plan de classe</h2>
+
+<div class="layout" *ngIf="classroom">
+
+  <app-plan
+    [tables]="classroom.tables"
+    (studentClicked)="selectStudent($event)">
+  </app-plan>
+
+  <app-sidebar
+    [tables]="classroom.tables"
+    (studentSelected)="selectStudent($event)">
+  </app-sidebar>
+
+  <app-student-detail
+    [student]="selectedStudent">
+  </app-student-detail>
+
+</div>

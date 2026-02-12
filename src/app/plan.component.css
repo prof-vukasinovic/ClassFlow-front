@@ -1,0 +1,27 @@
+.plan {
+  position: relative;
+  width: 800px;
+  height: 500px;
+  border: 2px solid black;
+  background-color: #f4f1ea;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.table {
+  position: absolute;
+  width: 100px;
+  height: 80px;
+  background-color: #d2b48c;
+  border: 2px solid #8b5a2b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  user-select: none;
+  text-align: center;
+  font-size: 13px;
+  padding: 4px;
+  box-sizing: border-box;
+  word-break: break-word;
+}

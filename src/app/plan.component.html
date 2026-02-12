@@ -1,0 +1,19 @@
+<div
+  class="plan"
+  (mousemove)="onMouseMove($event)"
+  (mouseup)="onMouseUp()"
+>
+
+  <div
+    class="table"
+    *ngFor="let table of tables"
+    [style.left.px]="table.x"
+    [style.top.px]="table.y"
+    (mousedown)="onMouseDown($event, table)"
+    (click)="table.eleve && studentClicked.emit(table.eleve)"
+  >
+    {{ table.eleve?.prenom || '' }}
+    {{ table.eleve?.nom || '' }}
+  </div>
+
+</div>

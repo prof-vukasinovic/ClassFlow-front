@@ -1,0 +1,21 @@
+<div *ngIf="student" class="detail">
+
+  <h3>{{ student.prenom }} {{ student.nom }}</h3>
+
+  <h4>Remarques</h4>
+
+  <div *ngIf="student.remarques?.length === 0" class="empty">
+    Aucune remarque
+  </div>
+
+  <div *ngFor="let remarque of student.remarques" class="remarque">
+    <div class="intitule">
+      {{ remarque.intitule }}
+    </div>
+
+    <div class="date">
+      {{ remarque.createdAt | date:'dd/MM/yyyy' }}
+    </div>
+  </div>
+
+</div>
