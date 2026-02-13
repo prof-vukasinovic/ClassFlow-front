@@ -3,3 +3,10 @@
   gap: 20px;
   align-items: flex-start;
 }
+
+.plan-column button {
+  width: 200px;
+  align-self: flex-start;
+  padding: 6px 10px;
+  cursor: pointer;
+}

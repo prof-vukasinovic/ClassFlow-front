@@ -1,0 +1,11 @@
+.layout {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.plan-column {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}

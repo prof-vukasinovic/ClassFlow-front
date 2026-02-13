@@ -1,0 +1,12 @@
+<h1>Vos classes</h1>
+
+<select (change)="goToClass($event)">
+  <option value="">Choisir une classe</option>
+  <option *ngFor="let classroom of classrooms" [value]="classroom.id">
+    {{ classroom.nom }}
+  </option>
+</select>
+
+<br><br>
+
+<button routerLink="/">Retour à l'accueil</button>

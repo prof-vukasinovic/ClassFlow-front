@@ -1,0 +1,40 @@
+<button routerLink="/classrooms">
+  ← Retour aux classes
+</button>
+
+<h1 *ngIf="classroom">
+  {{ classroom.classRoomNom }}
+</h1>
+
+<h2>Plan de classe</h2>
+
+<div class="layout" *ngIf="classroom">
+
+  <div class="plan-column">
+
+    <app-plan
+      [tables]="classroom.tables"
+      (studentClicked)="selectStudent($event)">
+    </app-plan>
+
+    <button (click)="pickRandomStudent()">
+      Tirer un élève au hasard
+    </button>
+
+    <div *ngIf="randomStudent">
+      Élève tiré : {{ randomStudent.prenom }} {{ randomStudent.nom }}
+    </div>
+
+  </div>
+
+  <app-sidebar
+    [tables]="classroom.tables"
+    (studentSelected)="selectStudent($event)">
+  </app-sidebar>
+
+  <app-student-detail
+    [student]="selectedStudent"
+    (remarksChanged)="loadClassroom()">
+  </app-student-detail>
+
+</div>
