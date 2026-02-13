@@ -17,7 +17,8 @@
   </app-sidebar>
 
   <app-student-detail
-    [student]="selectedStudent">
+    [student]="selectedStudent"
+    (remarksChanged)="loadClassroom()">
   </app-student-detail>
 
 </div>

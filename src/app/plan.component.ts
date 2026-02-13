@@ -16,15 +16,19 @@ export class PlanComponent {
   draggedTable: any = null;
   offsetX = 0;
   offsetY = 0;
+  hasMoved = false;
 
   onMouseDown(event: MouseEvent, table: any) {
     this.draggedTable = table;
     this.offsetX = event.offsetX;
     this.offsetY = event.offsetY;
+    this.hasMoved = false;
   }
 
   onMouseMove(event: MouseEvent) {
     if (!this.draggedTable) return;
+
+    this.hasMoved = true;
 
     const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
 
@@ -43,5 +47,12 @@ export class PlanComponent {
 
   onMouseUp() {
     this.draggedTable = null;
+  }
+
+  onTableClick(table: any) {
+    if (this.hasMoved) return;
+    if (table.eleve) {
+      this.studentClicked.emit(table.eleve);
+    }
   }
 }

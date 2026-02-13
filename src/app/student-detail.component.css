@@ -19,6 +19,11 @@
   color: #555;
 }
 
+.remarques-container {
+  max-height: 377px;
+  overflow-y: auto;
+}
+
 .remarque {
   padding: 8px;
   margin-bottom: 6px;

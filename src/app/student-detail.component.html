@@ -4,18 +4,50 @@
 
   <h4>Remarques</h4>
 
-  <div *ngIf="student.remarques?.length === 0" class="empty">
-    Aucune remarque
+  <div>
+    <input
+      [(ngModel)]="newRemarqueText"
+      (keyup.enter)="addRemarque()"
+      placeholder="Nouvelle remarque">
+    <button (click)="addRemarque()">Ajouter</button>
   </div>
 
-  <div *ngFor="let remarque of student.remarques" class="remarque">
+  <div class="remarques-container">
+
+    <div *ngIf="student.remarques.length === 0" class="empty">
+      Aucune remarque
+    </div>
+
+    <div *ngFor="let remarque of student.remarques" class="remarque">
+      <div class="intitule">
+        {{ remarque.intitule }}
+      </div>
+
+      <div class="date">
+        {{ remarque.createdAt | date:'dd/MM/yyyy' }}
+      </div>
+
+      <div>
+        <button (click)="editRemarque(remarque)">Modifier</button>
+        <button (click)="deleteRemarque(remarque)">Supprimer</button>
+      </div>
+    </div>
+
+  </div>
+
+  <h4 *ngIf="deletedHistory.length > 0">Historique</h4>
+
+  <div *ngFor="let r of deletedHistory" class="remarque">
     <div class="intitule">
-      {{ remarque.intitule }}
+      {{ r.intitule }}
     </div>
 
     <div class="date">
-      {{ remarque.createdAt | date:'dd/MM/yyyy' }}
+      Supprimée le {{ r.deletedAt | date:'dd/MM/yyyy HH:mm' }}
     </div>
+
+    <button (click)="restore(r)">Restaurer</button>
+    <button (click)="deleteForever(r)">Supprimer définitivement</button>
   </div>
 
 </div>

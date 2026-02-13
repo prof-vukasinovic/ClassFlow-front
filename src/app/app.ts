@@ -37,6 +37,16 @@ export class App implements OnInit {
         });
 
         this.classroom = data;
+
+        if (this.selectedStudent) {
+          const updatedStudent =
+            data.tables
+              .map((t: any) => t.eleve)
+              .find((e: any) => e?.id === this.selectedStudent.id);
+
+          this.selectedStudent = updatedStudent || null;
+        }
+
         this.cdr.detectChanges();
       });
   }

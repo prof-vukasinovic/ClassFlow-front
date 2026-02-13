@@ -10,7 +10,7 @@
     [style.left.px]="table.x"
     [style.top.px]="table.y"
     (mousedown)="onMouseDown($event, table)"
-    (click)="table.eleve && studentClicked.emit(table.eleve)"
+    (click)="onTableClick(table)"
   >
     {{ table.eleve?.prenom || '' }}
     {{ table.eleve?.nom || '' }}
