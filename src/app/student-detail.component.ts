@@ -7,7 +7,7 @@ export interface Remarque {
   id: number;
   intitule: string;
   createdAt: string;
-  deletedAt?: string;
+  deleted?: boolean;
 }
 
 export interface Student {
@@ -27,10 +27,8 @@ export interface Student {
 export class StudentDetailComponent implements OnChanges {
 
   @Input() student: Student | null = null;
-  @Output() remarksChanged = new EventEmitter<void>();
 
   newRemarqueText: string = "";
-  deletedHistory: Remarque[] = [];
 
   constructor(private http: HttpClient) {}
 
@@ -49,9 +47,9 @@ export class StudentDetailComponent implements OnChanges {
     };
 
     this.http.post('/api/remarques', body)
-      .subscribe(() => {
+      .subscribe((created: any) => {
+        this.student!.remarques.push(created);
         this.newRemarqueText = "";
-        this.remarksChanged.emit();
       });
   }
 
@@ -68,45 +66,33 @@ export class StudentDetailComponent implements OnChanges {
 
     this.http.put(`/api/remarques/${remarque.id}`, body)
       .subscribe(() => {
-        this.remarksChanged.emit();
+        remarque.intitule = nouveauTexte.trim();
       });
   }
 
   deleteRemarque(remarque: Remarque) {
+    remarque.deleted = true;
+  }
+
+  restore(remarque: Remarque) {
+    remarque.deleted = false;
+  }
+
+  deleteForever(remarque: Remarque) {
     if (!this.student) return;
 
     this.http.delete(`/api/remarques/${remarque.id}`)
       .subscribe(() => {
-
-        this.deletedHistory.push({
-          ...remarque,
-          deletedAt: new Date().toISOString()
-        });
-
-        this.remarksChanged.emit();
+        this.student!.remarques =
+          this.student!.remarques.filter(r => r.id !== remarque.id);
       });
   }
 
-  restore(remarque: Remarque) {
-    if (!this.student) return;
-
-    const body = {
-      intitule: remarque.intitule,
-      eleveId: this.student.id
-    };
-
-    this.http.post('/api/remarques', body)
-      .subscribe(() => {
-
-        this.deletedHistory =
-          this.deletedHistory.filter(r => r !== remarque);
-
-        this.remarksChanged.emit();
-      });
+  get activeRemarques() {
+    return this.student?.remarques.filter(r => !r.deleted) || [];
   }
 
-  deleteForever(remarque: Remarque) {
-    this.deletedHistory =
-      this.deletedHistory.filter(r => r !== remarque);
+  get deletedRemarques() {
+    return this.student?.remarques.filter(r => r.deleted) || [];
   }
 }

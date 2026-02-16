@@ -1,6 +1,6 @@
 <div class="sidebar">
 
-  <button (click)="toggleStudents()">
+  <button (click)="toggleStudents()" [disabled]="disabled">
     Liste des élèves
   </button>
 
@@ -15,7 +15,7 @@
     <div
       class="student"
       *ngFor="let eleve of filteredStudents()"
-      (click)="studentSelected.emit(eleve)"
+      (click)="selectStudent(eleve)"
     >
       {{ eleve.prenom }} {{ eleve.nom }}
     </div>

@@ -12,13 +12,20 @@ import { FormsModule } from '@angular/forms';
 export class SidebarComponent {
 
   @Input() tables: any[] = [];
+  @Input() disabled: boolean = false;
   @Output() studentSelected = new EventEmitter<any>();
 
   showStudents = false;
   searchTerm = '';
 
   toggleStudents() {
+    if (this.disabled) return;
+
     this.showStudents = !this.showStudents;
+
+    if (!this.showStudents) {
+      this.studentSelected.emit(null);
+    }
   }
 
   getStudents() {
@@ -33,5 +40,10 @@ export class SidebarComponent {
         .toLowerCase()
         .includes(this.searchTerm.toLowerCase())
     );
+  }
+
+  selectStudent(eleve: any) {
+    if (this.disabled) return;
+    this.studentSelected.emit(eleve);
   }
 }

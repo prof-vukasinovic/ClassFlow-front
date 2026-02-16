@@ -3,38 +3,139 @@
 </button>
 
 <h1 *ngIf="classroom">
-  {{ classroom.classRoomNom }}
+  {{ classroom.nom }}
 </h1>
 
 <h2>Plan de classe</h2>
 
-<div class="layout" *ngIf="classroom">
+<div class="mode-selector">
 
-  <div class="plan-column">
+  <button
+    class="lock-toggle"
+    [class.locked]="interactionMode === 'student'"
+    [class.unlocked]="interactionMode === 'table'"
+    (click)="toggleLock()">
 
-    <app-plan
-      [tables]="classroom.tables"
-      (studentClicked)="selectStudent($event)">
-    </app-plan>
+    {{ interactionMode === 'student'
+        ? '🔒 Tables verrouillées'
+        : '🔓 Tables déverrouillées' }}
 
-    <button (click)="pickRandomStudent()">
-      Tirer un élève au hasard
+  </button>
+
+  <div
+    class="table-modes"
+    *ngIf="interactionMode === 'table'">
+
+    <button
+      [class.active]="tableEditMode === 'free'"
+      (click)="setTableMode('free')">
+      Libre
     </button>
 
-    <div *ngIf="randomStudent">
-      Élève tiré : {{ randomStudent.prenom }} {{ randomStudent.nom }}
+    <button
+      [class.active]="tableEditMode === 'grid'"
+      (click)="setTableMode('grid')">
+      Grille
+    </button>
+
+    <div *ngIf="tableEditMode === 'grid'" style="margin-top:10px">
+
+      <label>
+        Colonnes :
+        <input type="number" [(ngModel)]="cols" min="1" style="width:60px">
+      </label>
+
+      <label style="margin-left:10px">
+        Lignes :
+        <input type="number" [(ngModel)]="rows" min="1" style="width:60px">
+      </label>
+
+      <button style="margin-left:10px" (click)="applyGrid()">
+        Appliquer
+      </button>
+
+    </div>
+
+    <div *ngIf="tableEditMode === 'free'" style="margin-top:10px">
+
+      <label>
+        Taille table :
+        <input type="number" [(ngModel)]="tableSize" min="50" style="width:80px">
+      </label>
+
     </div>
 
   </div>
 
-  <app-sidebar
-    [tables]="classroom.tables"
-    (studentSelected)="selectStudent($event)">
-  </app-sidebar>
+</div>
 
-  <app-student-detail
-    [student]="selectedStudent"
-    (remarksChanged)="loadClassroom()">
-  </app-student-detail>
+<div class="layout" *ngIf="classroom?.uiTables">
+
+  <div class="plan-column">
+
+    <app-plan
+      [tables]="classroom.uiTables"
+      [interactionMode]="interactionMode"
+      [tableEditMode]="tableEditMode"
+      [tableSize]="tableSize"
+      (studentClicked)="selectStudent($event)">
+    </app-plan>
+
+  </div>
+
+  <div class="right-column" *ngIf="interactionMode === 'student'">
+
+    <app-sidebar
+      #sidebar
+      [tables]="classroom.uiTables"
+      [disabled]="interactionMode !== 'student'"
+      (studentSelected)="selectStudent($event)">
+    </app-sidebar>
+
+    <app-student-detail
+      *ngIf="selectedStudent"
+      [student]="selectedStudent"
+      (remarksChanged)="loadRemarques()">
+    </app-student-detail>
+
+    <div class="remarque-filter">
+
+      <h3>Filtrer par remarque</h3>
+
+      <input
+        type="text"
+        [(ngModel)]="remarqueFilter"
+        placeholder="ex: DM3 non fait">
+
+      <div
+        class="results-box"
+        *ngIf="remarqueFilter.trim()">
+
+        <div *ngIf="filteredResults.length === 0" class="no-result">
+          Aucun résultat
+        </div>
+
+        <div
+          class="result-item"
+          *ngFor="let result of filteredResults">
+
+          <div class="result-student">
+            {{ result.eleve.prenom }} {{ result.eleve.nom }}
+          </div>
+
+          <ul>
+            <li *ngFor="let r of result.remarques">
+              {{ r.intitule }} —
+              {{ r.createdAt | date:'dd/MM/yyyy HH:mm' }}
+            </li>
+          </ul>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
 
 </div>

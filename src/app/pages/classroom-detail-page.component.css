@@ -1,11 +1,122 @@
 .layout {
   display: flex;
   gap: 20px;
-  align-items: flex-start;
+  width: 100%;
+  height: calc(100vh - 150px);
 }
 
 .plan-column {
+  flex: 1;
+  height: 100%;
+  display: flex;
+}
+
+.plan-column app-plan {
+  flex: 1;
+}
+
+.mode-selector {
+  margin: 15px 0 25px 0;
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.lock-toggle {
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  color: white;
+  transition: all 0.25s ease;
+}
+
+.lock-toggle.locked {
+  background-color: #c0392b;
+}
+
+.lock-toggle.unlocked {
+  background-color: #27ae60;
+}
+
+.lock-toggle:hover {
+  transform: scale(1.05);
+}
+
+.table-modes {
+  display: flex;
+  gap: 10px;
+}
+
+.table-modes button {
+  padding: 6px 12px;
+  cursor: pointer;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background-color: #f2f2f2;
+  transition: all 0.2s ease;
+}
+
+.table-modes button.active {
+  background-color: #3498db;
+  color: white;
+  border: 1px solid #3498db;
+}
+
+.right-column {
+  width: 350px;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 20px;
+}
+
+.remarque-filter {
+  background: #f4f4f4;
+  border-radius: 8px;
+  padding: 15px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.remarque-filter h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+.remarque-filter input {
+  width: 100%;
+  padding: 6px;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+}
+
+.results-box {
+  max-height: 180px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: white;
+  padding: 10px;
+}
+
+.results-box li {
+  font-size: 14px;
+  color: #000000;
+}
+
+.result-item {
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #eee;
+}
+
+.result-item:last-child {
+  border-bottom: none;
+}
+
+.result-student {
+  font-weight: bold;
+  font-size: 14px;
+  margin-bottom: 4px;
 }

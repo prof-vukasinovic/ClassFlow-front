@@ -1,19 +1,58 @@
 <div
+  #planContainer
   class="plan"
   (mousemove)="onMouseMove($event)"
-  (mouseup)="onMouseUp()"
+  (mouseup)="onMouseUp($event)"
 >
 
   <div
-    class="table"
+    class="table-wrapper"
     *ngFor="let table of tables"
     [style.left.px]="table.x"
     [style.top.px]="table.y"
-    (mousedown)="onMouseDown($event, table)"
-    (click)="onTableClick(table)"
   >
-    {{ table.eleve?.prenom || '' }}
-    {{ table.eleve?.nom || '' }}
+
+    <div
+      class="table"
+      [ngClass]="getTableColorClass(table)"
+      [style.width.px]="tableSize"
+      [style.height.px]="tableSize"
+      (mousedown)="onMouseDown($event, table)"
+      (click)="onTableClick(table)"
+    >
+
+      <div
+        class="student-name"
+        *ngIf="table.eleve"
+        (mousedown)="startStudentDrag(table.eleve, $event)"
+      >
+        {{ table.eleve?.prenom }} {{ table.eleve?.nom }}
+      </div>
+
+    </div>
+
+    <div
+      class="dm-bar-container"
+      *ngIf="getDMCount(table) > 0"
+      [style.width.px]="tableSize"
+    >
+      <div
+        class="dm-bar"
+        [ngClass]="getDMBarClass(table)"
+        [style.width.%]="getDMCount(table) * 33">
+      </div>
+    </div>
+
+  </div>
+
+  <div
+    class="avatar"
+    *ngIf="studentDragging && avatarVisible"
+    [style.left.px]="avatarX - 20"
+    [style.top.px]="avatarY - 40"
+  >
+    <div class="avatar-head"></div>
+    <div class="avatar-body"></div>
   </div>
 
 </div>

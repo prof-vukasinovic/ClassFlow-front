@@ -1,6 +1,6 @@
 {
   "/api": {
-    "target": "http://localhost:8080/classflow-back-1.1.0",
+    "target": "http://localhost:8080/classflow-back-1.2",
     "secure": false,
     "changeOrigin": true,
     "pathRewrite": {

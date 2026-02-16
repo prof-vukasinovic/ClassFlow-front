@@ -14,17 +14,17 @@
 
   <div class="remarques-container">
 
-    <div *ngIf="student.remarques.length === 0" class="empty">
+    <div *ngIf="activeRemarques.length === 0" class="empty">
       Aucune remarque
     </div>
 
-    <div *ngFor="let remarque of student.remarques" class="remarque">
+    <div *ngFor="let remarque of activeRemarques" class="remarque">
       <div class="intitule">
         {{ remarque.intitule }}
       </div>
 
       <div class="date">
-        {{ remarque.createdAt | date:'dd/MM/yyyy' }}
+        {{ remarque.createdAt | date:'dd/MM/yyyy HH:mm' }}
       </div>
 
       <div>
@@ -35,19 +35,19 @@
 
   </div>
 
-  <h4 *ngIf="deletedHistory.length > 0">Historique</h4>
+  <h4 *ngIf="deletedRemarques.length > 0">Corbeille</h4>
 
-  <div *ngFor="let r of deletedHistory" class="remarque">
+  <div *ngFor="let remarque of deletedRemarques" class="remarque">
     <div class="intitule">
-      {{ r.intitule }}
+      {{ remarque.intitule }}
     </div>
 
     <div class="date">
-      Supprimée le {{ r.deletedAt | date:'dd/MM/yyyy HH:mm' }}
+      {{ remarque.createdAt | date:'dd/MM/yyyy HH:mm' }}
     </div>
 
-    <button (click)="restore(r)">Restaurer</button>
-    <button (click)="deleteForever(r)">Supprimer définitivement</button>
+    <button (click)="restore(remarque)">Restaurer</button>
+    <button (click)="deleteForever(remarque)">Supprimer définitivement</button>
   </div>
 
 </div>
