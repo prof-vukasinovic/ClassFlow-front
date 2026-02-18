@@ -1,15 +1,14 @@
 server {
-  listen 80;
+  listen ${PORT};
   server_name _;
 
   root /usr/share/nginx/html;
   index index.html;
 
   location /api/ {
-    proxy_pass http://classflow-back:8080/;  # le / final est crucial (strip /api)
+    proxy_pass https://classflow-back.onrender.com/;
     proxy_http_version 1.1;
-    proxy_set_header Host $host;
-    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header Host classflow-back.onrender.com;
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     proxy_set_header X-Forwarded-Proto $scheme;
   }

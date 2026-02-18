@@ -6,7 +6,20 @@ COPY . .
 RUN npm run build
 
 FROM nginx:1.27-alpine
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY nginx.conf.template /etc/nginx/templates/default.conf.template
+
+# (tes lignes de copie dist restent identiques)
+COPY --from=build /app/dist/ /tmp/dist/
+RUN set -eux; \
+    APP_DIR="$(find /tmp/dist -maxdepth 3 -type d -name browser | head -n 1 || true)"; \
+    if [ -z "$APP_DIR" ]; then APP_DIR="$(find /tmp/dist -mindepth 1 -maxdepth 1 -type d | head -n 1)"; fi; \
+    rm -rf /usr/share/nginx/html/*; \
+    cp -r "$APP_DIR"/* /usr/share/nginx/html/
+
+EXPOSE 80
+
+CMD ["/bin/sh","-lc","envsubst '$PORT' < /etc/nginx/templates/default.conf.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"]
+
 
 # Copie tout dist puis "normalise" vers /usr/share/nginx/html
 COPY --from=build /app/dist/ /tmp/dist/
