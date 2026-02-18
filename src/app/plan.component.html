@@ -7,10 +7,17 @@
 
   <div
     class="table-wrapper"
-    *ngFor="let table of tables"
+    *ngFor="let table of tables; let i = index"
     [style.left.px]="table.x"
     [style.top.px]="table.y"
   >
+
+    <button
+      *ngIf="interactionMode === 'table'"
+      (click)="deleteTable(i)"
+      style="position:absolute; top:-10px; right:-10px;">
+      ❌
+    </button>
 
     <div
       class="table"

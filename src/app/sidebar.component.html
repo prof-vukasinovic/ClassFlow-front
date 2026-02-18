@@ -1,8 +1,34 @@
 <div class="sidebar">
 
-  <button (click)="toggleStudents()" [disabled]="disabled">
-    Liste des élèves
-  </button>
+  <div style="display:flex; gap:5px;">
+    <button (click)="toggleStudents()" [disabled]="disabled" style="flex:1;">
+      👥 Élèves
+    </button>
+
+    <button (click)="showAddForm = !showAddForm" [disabled]="disabled">
+      ➕
+    </button>
+  </div>
+
+  <div *ngIf="showAddForm" style="margin-top:10px;">
+    <input
+      type="text"
+      placeholder="Nom"
+      [(ngModel)]="newNom"
+      style="width:100%; margin-bottom:5px;"
+    />
+
+    <input
+      type="text"
+      placeholder="Prénom"
+      [(ngModel)]="newPrenom"
+      style="width:100%; margin-bottom:5px;"
+    />
+
+    <button (click)="submitNewStudent()" style="width:100%;">
+      Ajouter
+    </button>
+  </div>
 
   <div class="dropdown" [class.hidden]="!showStudents">
 

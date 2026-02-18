@@ -2,13 +2,26 @@
 
   <h3>{{ student.prenom }} {{ student.nom }}</h3>
 
+  <button (click)="deleteStudent()">🗑️</button>
+
+  <button (click)="renameStudent()" style="margin-top:10px;">
+    ✏️
+  </button>
+
   <h4>Remarques</h4>
 
   <div>
+    <select [(ngModel)]="selectedCategory">
+      <option *ngFor="let c of categories" [value]="c.value">
+        {{ c.label }}
+      </option>
+    </select>
+
     <input
       [(ngModel)]="newRemarqueText"
       (keyup.enter)="addRemarque()"
       placeholder="Nouvelle remarque">
+
     <button (click)="addRemarque()">Ajouter</button>
   </div>
 
@@ -20,7 +33,7 @@
 
     <div *ngFor="let remarque of activeRemarques" class="remarque">
       <div class="intitule">
-        {{ remarque.intitule }}
+        {{ cleanText(remarque.intitule) }}
       </div>
 
       <div class="date">
@@ -28,8 +41,8 @@
       </div>
 
       <div>
-        <button (click)="editRemarque(remarque)">Modifier</button>
-        <button (click)="deleteRemarque(remarque)">Supprimer</button>
+        <button (click)="editRemarque(remarque)">✏️</button>
+        <button (click)="deleteRemarque(remarque)">🗑️</button>
       </div>
     </div>
 
@@ -39,14 +52,14 @@
 
   <div *ngFor="let remarque of deletedRemarques" class="remarque">
     <div class="intitule">
-      {{ remarque.intitule }}
+      {{ cleanText(remarque.intitule) }}
     </div>
 
     <div class="date">
       {{ remarque.createdAt | date:'dd/MM/yyyy HH:mm' }}
     </div>
 
-    <button (click)="restore(remarque)">Restaurer</button>
+    <button (click)="restore(remarque)">↩️</button>
     <button (click)="deleteForever(remarque)">Supprimer définitivement</button>
   </div>
 

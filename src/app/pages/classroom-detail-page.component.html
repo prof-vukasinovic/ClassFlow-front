@@ -8,6 +8,12 @@
 
 <h2>Plan de classe</h2>
 
+<button
+  [routerLink]="['/classrooms', classroom?.id, 'groupes']"
+  style="margin-bottom:15px;">
+  👥 Groupes d'élèves
+</button>
+
 <div class="mode-selector">
 
   <button
@@ -38,6 +44,10 @@
       Grille
     </button>
 
+    <button (click)="startAddingTable()" style="margin-left:10px;">
+      ➕ Ajouter une table
+    </button>
+
     <div *ngIf="tableEditMode === 'grid'" style="margin-top:10px">
 
       <label>
@@ -51,7 +61,7 @@
       </label>
 
       <button style="margin-left:10px" (click)="applyGrid()">
-        Appliquer
+        ✔️
       </button>
 
     </div>
@@ -78,7 +88,9 @@
       [interactionMode]="interactionMode"
       [tableEditMode]="tableEditMode"
       [tableSize]="tableSize"
-      (studentClicked)="selectStudent($event)">
+      (studentClicked)="selectStudent($event)"
+      (tableDelete)="deleteTable($event)"
+      (tableMoved)="saveClassroom()">
     </app-plan>
 
   </div>
@@ -89,13 +101,16 @@
       #sidebar
       [tables]="classroom.uiTables"
       [disabled]="interactionMode !== 'student'"
-      (studentSelected)="selectStudent($event)">
+      (studentSelected)="selectStudent($event)"
+      (addStudent)="openAddStudent($event)">
     </app-sidebar>
 
     <app-student-detail
       *ngIf="selectedStudent"
       [student]="selectedStudent"
-      (remarksChanged)="loadRemarques()">
+      [classRoomId]="classroom?.id"
+      (studentDeleted)="onStudentDeleted($event)"
+      (remarksChanged)="onRemarksChanged()">
     </app-student-detail>
 
     <div class="remarque-filter">

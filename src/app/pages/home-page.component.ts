@@ -7,7 +7,7 @@ import { RouterModule } from '@angular/router';
   standalone: true,
   imports: [CommonModule, RouterModule],
   template: `
-    <h1>Bienvenue sur FlowClass</h1>
+    <h1>Bienvenue sur ClassFlow</h1>
     <button routerLink="/classrooms">
       Accéder à vos classes
     </button>

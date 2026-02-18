@@ -1,0 +1,54 @@
+<h1>Groupes</h1>
+
+<button [routerLink]="['/classrooms', classId]">⬅️</button>
+
+<div class="toolbar">
+  <input type="number" [(ngModel)]="nombreGroupes" min="1">
+  <button (click)="createGroupes()">➕</button>
+  <button (click)="repartitionAleatoire()">🎲</button>
+  <button (click)="sauvegarder()">💾</button>
+</div>
+
+<div class="groupes-grid">
+
+  <div *ngFor="let groupe of groupes; let i = index"
+       class="groupe-card"
+       [style.border]="'3px solid ' + couleurs[i % couleurs.length]">
+
+    <div class="groupe-header">
+      <h3>{{ groupe.nom }}</h3>
+      <button (click)="toggleExpand(groupe)">
+        {{ groupe.expanded ? '🙈' : '👁' }}
+      </button>
+    </div>
+
+    <div class="groupe-body"
+         [class.collapsed]="!groupe.expanded">
+
+      <div *ngFor="let eleve of groupe.eleves"
+           class="eleve-row">
+
+        {{ eleve.prenom }} {{ eleve.nom }}
+
+        <button (click)="retirerEleve(groupe, eleve)">❌</button>
+
+      </div>
+
+    </div>
+
+    <hr>
+
+    <select #selectEleve>
+      <option *ngFor="let e of getAvailableStudents()" [value]="e.id">
+        {{ e.prenom }} {{ e.nom }}
+      </option>
+    </select>
+
+    <div class="groupe-actions">
+      <button (click)="ajouterEleve(groupe, +selectEleve.value)">➕</button>
+      <button (click)="supprimerGroupe(groupe)">🗑️</button>
+    </div>
+
+  </div>
+
+</div>

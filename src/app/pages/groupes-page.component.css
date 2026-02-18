@@ -1,0 +1,48 @@
+.toolbar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.groupes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 15px;
+}
+
+.groupe-card {
+  padding: 10px;
+  border-radius: 8px;
+  background: #f9f9f9;
+  display: flex;
+  flex-direction: column;
+}
+
+.groupe-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.groupe-body {
+  max-height: 200px;
+  overflow-y: auto;
+  transition: max-height 0.3s ease;
+}
+
+.groupe-body.collapsed {
+  max-height: 0;
+  overflow: hidden;
+}
+
+.eleve-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+.groupe-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 5px;
+}

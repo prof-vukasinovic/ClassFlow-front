@@ -21,6 +21,10 @@ export class ClassroomsPageComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.loadClasses();
+  }
+
+  loadClasses() {
     this.http
       .get<any[]>('/api/classrooms')
       .subscribe(data => {
@@ -34,5 +38,44 @@ export class ClassroomsPageComponent implements OnInit {
     if (id) {
       this.router.navigate(['/classrooms', id]);
     }
+  }
+
+  createClass() {
+    const nom = prompt("Nom de la nouvelle classe ?");
+    if (!nom || !nom.trim()) return;
+
+    this.http.post('/api/classrooms', { nom })
+      .subscribe(() => {
+        this.loadClasses();
+      });
+  }
+
+  renameClass(classroom: any) {
+    const newName = prompt("Nouveau nom :", classroom.nom);
+    if (!newName || !newName.trim()) return;
+
+    this.http.put(
+      `/api/classrooms/${classroom.id}`,
+      { ...classroom, nom: newName }
+    ).subscribe(() => {
+      this.loadClasses();
+    });
+  }
+
+  deleteClass(id: number) {
+    const classroom = this.classrooms.find(c => c.id === id);
+    if (!classroom) return;
+
+    const confirmed = window.confirm(
+      `Vous êtes sûr de vouloir supprimer "${classroom.nom}" ?`
+    );
+
+    if (!confirmed) return;
+
+    this.http.delete(`/api/classrooms/${id}`)
+      .subscribe(() => {
+        this.classrooms = this.classrooms.filter(c => c.id !== id);
+        this.cdr.detectChanges();
+      });
   }
 }

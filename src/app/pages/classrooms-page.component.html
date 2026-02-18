@@ -1,11 +1,31 @@
 <h1>Vos classes</h1>
 
+<div style="margin-bottom:15px;">
+  <button (click)="createClass()">➕ Ajouter une classe</button>
+</div>
+
 <select (change)="goToClass($event)">
   <option value="">Choisir une classe</option>
   <option *ngFor="let classroom of classrooms" [value]="classroom.id">
     {{ classroom.nom }}
   </option>
 </select>
+
+<h3>Gérer les classes</h3>
+
+<ul>
+  <li *ngFor="let classroom of classrooms" style="margin-bottom:8px;">
+    {{ classroom.nom }}
+
+    <button (click)="renameClass(classroom)" style="margin-left:10px;">
+      ✏️
+    </button>
+
+    <button (click)="deleteClass(classroom.id)" style="margin-left:5px;">
+      🗑️
+    </button>
+  </li>
+</ul>
 
 <br><br>
 

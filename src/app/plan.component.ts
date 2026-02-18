@@ -23,9 +23,12 @@ export class PlanComponent implements AfterViewInit {
   @Input() interactionMode: 'student' | 'table' = 'student';
   @Input() tableEditMode: 'free' | 'grid' = 'free';
   @Input() tableSize: number = 100;
+  @Input() addingTable: boolean = false;
+  @Input() newTable: any = null;
 
   @Output() studentClicked = new EventEmitter<any>();
   @Output() tableMoved = new EventEmitter<void>();
+  @Output() tableDelete = new EventEmitter<number>();
 
   @ViewChild('planContainer') planContainer!: ElementRef;
 
@@ -64,42 +67,48 @@ export class PlanComponent implements AfterViewInit {
     this.rows = rows;
   }
 
-  getTableColorClass(table: any): string {
-    if (!table.eleve || !table.eleve.remarques) return '';
+  deleteTable(index: number) {
+    this.tableDelete.emit(index);
+  }
 
-    const bavardages = table.eleve.remarques.filter((r: any) =>
-      r.intitule?.toLowerCase().includes('bavard')
+  getRemarqueCategory(remarque: any): string {
+    const match = remarque.intitule?.match(/^\[(.*?)\]/);
+    return match ? match[1] : 'AUTRE';
+  }
+
+  getBavardageCount(eleve: any): number {
+    if (!eleve?.remarques) return 0;
+    return eleve.remarques.filter((r: any) =>
+      this.getRemarqueCategory(r) === 'BAVARDAGE'
     ).length;
+  }
 
-    if (bavardages >= 3) return 'table-red';
-    if (bavardages === 2) return 'table-orange';
-    if (bavardages === 1) return 'table-yellow';
-
+  getTableColorClass(table: any): string {
+    if (!table.eleve) return '';
+    const count = this.getBavardageCount(table.eleve);
+    if (count >= 3) return 'table-red';
+    if (count === 2) return 'table-orange';
+    if (count === 1) return 'table-yellow';
     return '';
   }
 
   getDMCount(table: any): number {
     if (!table.eleve?.remarques) return 0;
-
     return table.eleve.remarques.filter((r: any) =>
-      r.intitule?.toLowerCase().includes('dm') &&
-      r.intitule?.toLowerCase().includes('non fait')
+      this.getRemarqueCategory(r) === 'DEVOIR_NON_FAIT'
     ).length;
   }
 
   getDMBarClass(table: any): string {
     const count = this.getDMCount(table);
-
     if (count >= 3) return 'dm-red';
     if (count === 2) return 'dm-orange';
     if (count === 1) return 'dm-yellow';
-
     return '';
   }
 
   onMouseDown(event: MouseEvent, table: any) {
     if (event.button !== 0) return;
-
     if (this.interactionMode === 'table') {
       this.draggedTable = table;
       this.offsetX = event.offsetX;
@@ -110,9 +119,7 @@ export class PlanComponent implements AfterViewInit {
   startStudentDrag(eleve: any, event: MouseEvent) {
     if (this.interactionMode !== 'student') return;
     if (event.button !== 0) return;
-
     event.stopPropagation();
-
     this.studentDragging = eleve;
     this.dragStartX = event.clientX;
     this.dragStartY = event.clientY;
@@ -123,21 +130,33 @@ export class PlanComponent implements AfterViewInit {
 
   onMouseMove(event: MouseEvent) {
 
-    if (this.studentDragging) {
+    if (this.addingTable && this.newTable) {
+      const rect = this.planContainer.nativeElement.getBoundingClientRect();
 
+      let newX = event.clientX - rect.left - this.tableSize / 2;
+      let newY = event.clientY - rect.top - this.tableSize / 2;
+
+      newX = Math.max(0, Math.min(newX, rect.width - this.tableSize));
+      newY = Math.max(0, Math.min(newY, rect.height - this.tableSize));
+
+      this.newTable.x = newX;
+      this.newTable.y = newY;
+
+      this.cdr.detectChanges();
+      return;
+    }
+
+    if (this.studentDragging) {
       const dx = event.clientX - this.dragStartX;
       const dy = event.clientY - this.dragStartY;
       const distance = Math.sqrt(dx * dx + dy * dy);
-
       if (!this.avatarVisible && distance > this.dragThreshold) {
         this.avatarVisible = true;
       }
-
       if (this.avatarVisible) {
         this.avatarX = event.clientX;
         this.avatarY = event.clientY;
       }
-
       this.cdr.detectChanges();
       return;
     }
@@ -154,7 +173,6 @@ export class PlanComponent implements AfterViewInit {
     const maxY = rect.height - this.tableSize;
 
     if (this.tableEditMode === 'grid') {
-
       const cellWidth = rect.width / this.cols;
       const cellHeight = rect.height / this.rows;
 
@@ -173,9 +191,7 @@ export class PlanComponent implements AfterViewInit {
 
       this.draggedTable.x = snappedX;
       this.draggedTable.y = snappedY;
-
     } else {
-
       if (this.isOverlapping(newX, newY, this.draggedTable)) return;
 
       newX = Math.max(0, Math.min(newX, maxX));
@@ -190,13 +206,20 @@ export class PlanComponent implements AfterViewInit {
 
   onMouseUp(event: MouseEvent) {
 
-    if (this.studentDragging && this.avatarVisible) {
+    if (this.addingTable && this.newTable) {
+      this.tables.push(this.newTable);
+      this.tableMoved.emit();
+      this.cdr.detectChanges();
+      return;
+    }
 
+    if (this.studentDragging && this.avatarVisible) {
       const element = document.elementFromPoint(event.clientX, event.clientY);
       const tableEl = element?.closest('.table');
 
       if (tableEl) {
-        const index = Array.from(tableEl.parentElement!.children).indexOf(tableEl);
+        const wrapper = tableEl.closest('.table-wrapper');
+        const index = Array.from(wrapper!.parentElement!.children).indexOf(wrapper!);
         const targetTable = this.tables[index];
 
         if (targetTable) {
@@ -225,14 +248,32 @@ export class PlanComponent implements AfterViewInit {
     });
   }
 
+  getEffectiveHeight(table: any): number {
+    const hasDM = this.getDMCount(table) > 0;
+
+    if (!hasDM) return this.tableSize;
+
+    const dmHeight = 14;
+    const dmMargin = 6;
+    const extraSafety = 4;
+
+    return this.tableSize + dmHeight + dmMargin + extraSafety;
+  }
+
   isOverlapping(x: number, y: number, current: any): boolean {
+
+    const currentHeight = this.getEffectiveHeight(current);
+
     return this.tables.some(t => {
       if (t === current) return false;
+
+      const otherHeight = this.getEffectiveHeight(t);
+
       return (
         x < t.x + this.tableSize &&
         x + this.tableSize > t.x &&
-        y < t.y + this.tableSize &&
-        y + this.tableSize > t.y
+        y < t.y + otherHeight &&
+        y + currentHeight > t.y
       );
     });
   }

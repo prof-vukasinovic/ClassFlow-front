@@ -13,10 +13,16 @@ export class SidebarComponent {
 
   @Input() tables: any[] = [];
   @Input() disabled: boolean = false;
+
   @Output() studentSelected = new EventEmitter<any>();
+  @Output() addStudent = new EventEmitter<{ nom: string; prenom: string }>();
 
   showStudents = false;
   searchTerm = '';
+
+  showAddForm = false;
+  newNom = '';
+  newPrenom = '';
 
   toggleStudents() {
     if (this.disabled) return;
@@ -45,5 +51,18 @@ export class SidebarComponent {
   selectStudent(eleve: any) {
     if (this.disabled) return;
     this.studentSelected.emit(eleve);
+  }
+
+  submitNewStudent() {
+    if (!this.newNom.trim() || !this.newPrenom.trim()) return;
+
+    this.addStudent.emit({
+      nom: this.newNom.trim(),
+      prenom: this.newPrenom.trim()
+    });
+
+    this.newNom = '';
+    this.newPrenom = '';
+    this.showAddForm = false;
   }
 }
