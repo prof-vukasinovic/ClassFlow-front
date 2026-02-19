@@ -47,6 +47,16 @@
 .table-modes {
   display: flex;
   gap: 10px;
+  align-items: center;
+}
+
+.table-modes label {
+  font-size: 14px;
+}
+
+.table-modes input {
+  margin-left: 5px;
+  padding: 4px;
 }
 
 .table-modes button {
@@ -58,10 +68,8 @@
   transition: all 0.2s ease;
 }
 
-.table-modes button.active {
-  background-color: #3498db;
-  color: white;
-  border: 1px solid #3498db;
+.table-modes button:hover {
+  background-color: #e0e0e0;
 }
 
 .right-column {

@@ -1,0 +1,61 @@
+<div class="zone-container" [ngClass]="currentZone">
+
+  <div class="timer-box">
+
+    <div class="timer-header">⏱️</div>
+
+    <div class="time-display">
+      {{ formatTime() }}
+    </div>
+
+    <div class="timer-controls">
+
+      <input 
+        type="number"
+        min="1"
+        [(ngModel)]="minutesInput"
+        [disabled]="isRunning">
+
+      <button (click)="startTimer()" [disabled]="isRunning">▶</button>
+      <button (click)="pauseTimer()" [disabled]="!isRunning">⏸</button>
+      <button (click)="resetTimer()">⟲</button>
+
+    </div>
+
+  </div>
+
+  <button class="back-button" (click)="goBack()">
+    ← Retour au plan
+  </button>
+
+  <h1>Zone sonore</h1>
+
+  <div class="traffic-light">
+
+    <div 
+      class="light red"
+      [class.active]="currentZone === 'red'"
+      (click)="setZone('red')">
+    </div>
+
+    <div 
+      class="light orange"
+      [class.active]="currentZone === 'orange'"
+      (click)="setZone('orange')">
+    </div>
+
+    <div 
+      class="light green"
+      [class.active]="currentZone === 'green'"
+      (click)="setZone('green')">
+    </div>
+
+  </div>
+
+  <div class="zone-label">
+    <span *ngIf="currentZone === 'red'">🔴 Zone silence</span>
+    <span *ngIf="currentZone === 'orange'">🟠 Zone chuchotement</span>
+    <span *ngIf="currentZone === 'green'">🟢 Zone normale</span>
+  </div>
+
+</div>

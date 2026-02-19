@@ -10,8 +10,26 @@
 
 <button
   [routerLink]="['/classrooms', classroom?.id, 'groupes']"
-  style="margin-bottom:15px;">
+  style="margin-bottom:10px;">
   👥 Groupes d'élèves
+</button>
+
+<button
+  [routerLink]="['/classrooms', classroom?.id, 'roulette']"
+  style="margin-left:15px;">
+  🎡 Tirage au sort
+</button>
+
+<button
+  [routerLink]="['/classrooms', classroom?.id, 'zone']"
+  style="margin-left:15px;">
+  🚦 Zone sonore
+</button>
+
+<button
+  style="margin-left:15px;"
+  (click)="toggleSidebar()">
+  {{ sidebarVisible ? '🙈 Masquer les informations des élèves' : '👁️ Afficher les informations élèves' }}
 </button>
 
 <div class="mode-selector">
@@ -32,48 +50,25 @@
     class="table-modes"
     *ngIf="interactionMode === 'table'">
 
-    <button
-      [class.active]="tableEditMode === 'free'"
-      (click)="setTableMode('free')">
-      Libre
+    <label>
+      Colonnes :
+      <input type="number"
+             [(ngModel)]="cols"
+             min="1"
+             style="width:60px">
+    </label>
+
+    <label style="margin-left:10px">
+      Lignes :
+      <input type="number"
+             [(ngModel)]="rows"
+             min="1"
+             style="width:60px">
+    </label>
+
+    <button style="margin-left:10px" (click)="applyGrid()">
+      ✔️
     </button>
-
-    <button
-      [class.active]="tableEditMode === 'grid'"
-      (click)="setTableMode('grid')">
-      Grille
-    </button>
-
-    <button (click)="startAddingTable()" style="margin-left:10px;">
-      ➕ Ajouter une table
-    </button>
-
-    <div *ngIf="tableEditMode === 'grid'" style="margin-top:10px">
-
-      <label>
-        Colonnes :
-        <input type="number" [(ngModel)]="cols" min="1" style="width:60px">
-      </label>
-
-      <label style="margin-left:10px">
-        Lignes :
-        <input type="number" [(ngModel)]="rows" min="1" style="width:60px">
-      </label>
-
-      <button style="margin-left:10px" (click)="applyGrid()">
-        ✔️
-      </button>
-
-    </div>
-
-    <div *ngIf="tableEditMode === 'free'" style="margin-top:10px">
-
-      <label>
-        Taille table :
-        <input type="number" [(ngModel)]="tableSize" min="50" style="width:80px">
-      </label>
-
-    </div>
 
   </div>
 
@@ -86,16 +81,16 @@
     <app-plan
       [tables]="classroom.uiTables"
       [interactionMode]="interactionMode"
-      [tableEditMode]="tableEditMode"
       [tableSize]="tableSize"
+      [cols]="cols"
+      [rows]="rows"
       (studentClicked)="selectStudent($event)"
-      (tableDelete)="deleteTable($event)"
       (tableMoved)="saveClassroom()">
     </app-plan>
 
   </div>
 
-  <div class="right-column" *ngIf="interactionMode === 'student'">
+  <div class="right-column" *ngIf="sidebarVisible">
 
     <app-sidebar
       #sidebar

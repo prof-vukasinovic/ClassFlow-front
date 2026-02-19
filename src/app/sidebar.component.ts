@@ -37,7 +37,10 @@ export class SidebarComponent {
   getStudents() {
     return this.tables
       .map(t => t.eleve)
-      .filter(e => e);
+      .filter(e => e)
+      .sort((a: any, b: any) =>
+        a.nom.localeCompare(b.nom, 'fr', { sensitivity: 'base' })
+      );
   }
 
   filteredStudents() {

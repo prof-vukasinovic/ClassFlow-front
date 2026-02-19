@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-groupes-page',
@@ -22,7 +23,8 @@ export class GroupesPageComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private http: HttpClient
+    private http: HttpClient,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -48,6 +50,7 @@ export class GroupesPageComponent implements OnInit {
 
         if (!Array.isArray(data) || data.length === 0) {
           this.groupes = [];
+          this.cdr.detectChanges();
           return;
         }
 
@@ -59,6 +62,8 @@ export class GroupesPageComponent implements OnInit {
         }));
 
         this.nombreGroupes = this.groupes.length;
+
+        this.cdr.detectChanges();
       });
   }
 

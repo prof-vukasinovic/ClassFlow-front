@@ -1,0 +1,125 @@
+.zone-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  position: relative;
+  transition: background-color 0.4s ease;
+}
+
+.zone-container.red {
+  background-color: #ff8c8c;
+}
+
+.zone-container.orange {
+  background-color: #ffbf66;
+}
+
+.zone-container.green {
+  background-color: #80e6a8;
+}
+
+.back-button {
+  position: absolute;
+  left: 20px;
+  top: 20px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  background: white;
+}
+
+.traffic-light {
+  width: 200px;
+  padding: 30px;
+  background: #333;
+  border-radius: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  align-items: center;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+}
+
+.light {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  background: #555;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.light.red.active {
+  background: #e74c3c;
+  box-shadow: 0 0 40px #e74c3c;
+}
+
+.light.orange.active {
+  background: #f39c12;
+  box-shadow: 0 0 40px #f39c12;
+}
+
+.light.green.active {
+  background: #2ecc71;
+  box-shadow: 0 0 40px #2ecc71;
+}
+
+.zone-label {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.timer-box {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: white;
+  padding: 15px 18px;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  min-width: 140px;
+  z-index: 1000;
+}
+
+.timer-header {
+  font-size: 26px;
+}
+
+.time-display {
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.timer-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.timer-controls input {
+  width: 50px;
+  padding: 4px;
+  text-align: center;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.timer-controls button {
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  background: #eee;
+}
+
+.timer-controls button:hover {
+  background: #ddd;
+}

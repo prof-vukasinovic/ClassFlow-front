@@ -21,26 +21,19 @@ export class PlanComponent implements AfterViewInit {
 
   @Input() tables: any[] = [];
   @Input() interactionMode: 'student' | 'table' = 'student';
-  @Input() tableEditMode: 'free' | 'grid' = 'free';
   @Input() tableSize: number = 100;
-  @Input() addingTable: boolean = false;
-  @Input() newTable: any = null;
+  @Input() cols: number = 5;
+  @Input() rows: number = 5;
 
   @Output() studentClicked = new EventEmitter<any>();
   @Output() tableMoved = new EventEmitter<void>();
-  @Output() tableDelete = new EventEmitter<number>();
 
   @ViewChild('planContainer') planContainer!: ElementRef;
 
   planWidth = 0;
   planHeight = 0;
 
-  cols = 1;
-  rows = 1;
-
   draggedTable: any = null;
-  offsetX = 0;
-  offsetY = 0;
 
   studentDragging: any = null;
   avatarX = 0;
@@ -60,15 +53,6 @@ export class PlanComponent implements AfterViewInit {
     const rect = this.planContainer.nativeElement.getBoundingClientRect();
     this.planWidth = rect.width;
     this.planHeight = rect.height;
-  }
-
-  setGrid(cols: number, rows: number) {
-    this.cols = cols;
-    this.rows = rows;
-  }
-
-  deleteTable(index: number) {
-    this.tableDelete.emit(index);
   }
 
   getRemarqueCategory(remarque: any): string {
@@ -107,12 +91,16 @@ export class PlanComponent implements AfterViewInit {
     return '';
   }
 
+  getRealTableHeight(table: any): number {
+    const hasDM = this.getDMCount(table) > 0;
+    if (!hasDM) return this.tableSize;
+    return this.tableSize + 18;
+  }
+
   onMouseDown(event: MouseEvent, table: any) {
     if (event.button !== 0) return;
     if (this.interactionMode === 'table') {
       this.draggedTable = table;
-      this.offsetX = event.offsetX;
-      this.offsetY = event.offsetY;
     }
   }
 
@@ -120,6 +108,7 @@ export class PlanComponent implements AfterViewInit {
     if (this.interactionMode !== 'student') return;
     if (event.button !== 0) return;
     event.stopPropagation();
+
     this.studentDragging = eleve;
     this.dragStartX = event.clientX;
     this.dragStartY = event.clientY;
@@ -130,33 +119,20 @@ export class PlanComponent implements AfterViewInit {
 
   onMouseMove(event: MouseEvent) {
 
-    if (this.addingTable && this.newTable) {
-      const rect = this.planContainer.nativeElement.getBoundingClientRect();
-
-      let newX = event.clientX - rect.left - this.tableSize / 2;
-      let newY = event.clientY - rect.top - this.tableSize / 2;
-
-      newX = Math.max(0, Math.min(newX, rect.width - this.tableSize));
-      newY = Math.max(0, Math.min(newY, rect.height - this.tableSize));
-
-      this.newTable.x = newX;
-      this.newTable.y = newY;
-
-      this.cdr.detectChanges();
-      return;
-    }
-
     if (this.studentDragging) {
       const dx = event.clientX - this.dragStartX;
       const dy = event.clientY - this.dragStartY;
       const distance = Math.sqrt(dx * dx + dy * dy);
+
       if (!this.avatarVisible && distance > this.dragThreshold) {
         this.avatarVisible = true;
       }
+
       if (this.avatarVisible) {
         this.avatarX = event.clientX;
         this.avatarY = event.clientY;
       }
+
       this.cdr.detectChanges();
       return;
     }
@@ -166,52 +142,36 @@ export class PlanComponent implements AfterViewInit {
 
     const rect = this.planContainer.nativeElement.getBoundingClientRect();
 
-    let newX = event.clientX - rect.left - this.offsetX;
-    let newY = event.clientY - rect.top - this.offsetY;
+    const cellWidth = rect.width / this.cols;
+    const cellHeight = rect.height / this.rows;
 
-    const maxX = rect.width - this.tableSize;
-    const maxY = rect.height - this.tableSize;
+    let col = Math.floor((event.clientX - rect.left) / cellWidth);
+    let row = Math.floor((event.clientY - rect.top) / cellHeight);
 
-    if (this.tableEditMode === 'grid') {
-      const cellWidth = rect.width / this.cols;
-      const cellHeight = rect.height / this.rows;
+    col = Math.max(0, Math.min(col, this.cols - 1));
+    row = Math.max(0, Math.min(row, this.rows - 1));
 
-      let col = Math.round(newX / cellWidth);
-      let row = Math.round(newY / cellHeight);
+    const occupied = this.tables.some(t => {
+      if (t === this.draggedTable) return false;
+      const tCol = Math.floor(t.x / cellWidth);
+      const tRow = Math.floor(t.y / cellHeight);
+      return tCol === col && tRow === row;
+    });
 
-      col = Math.max(0, Math.min(col, this.cols - 1));
-      row = Math.max(0, Math.min(row, this.rows - 1));
+    if (occupied) return;
 
-      if (this.isGridOccupied(col, row, this.draggedTable, cellWidth, cellHeight)) {
-        return;
-      }
+    const realHeight = this.getRealTableHeight(this.draggedTable);
 
-      const snappedX = col * cellWidth + (cellWidth - this.tableSize) / 2;
-      const snappedY = row * cellHeight + (cellHeight - this.tableSize) / 2;
+    this.draggedTable.x =
+      col * cellWidth + (cellWidth - this.tableSize) / 2;
 
-      this.draggedTable.x = snappedX;
-      this.draggedTable.y = snappedY;
-    } else {
-      if (this.isOverlapping(newX, newY, this.draggedTable)) return;
-
-      newX = Math.max(0, Math.min(newX, maxX));
-      newY = Math.max(0, Math.min(newY, maxY));
-
-      this.draggedTable.x = newX;
-      this.draggedTable.y = newY;
-    }
+    this.draggedTable.y =
+      row * cellHeight + (cellHeight - realHeight) / 2;
 
     this.cdr.detectChanges();
   }
 
   onMouseUp(event: MouseEvent) {
-
-    if (this.addingTable && this.newTable) {
-      this.tables.push(this.newTable);
-      this.tableMoved.emit();
-      this.cdr.detectChanges();
-      return;
-    }
 
     if (this.studentDragging && this.avatarVisible) {
       const element = document.elementFromPoint(event.clientX, event.clientY);
@@ -223,7 +183,9 @@ export class PlanComponent implements AfterViewInit {
         const targetTable = this.tables[index];
 
         if (targetTable) {
-          const sourceTable = this.tables.find(t => t.eleve?.id === this.studentDragging.id);
+          const sourceTable = this.tables.find(t =>
+            t.eleve && t.eleve.id === this.studentDragging.id
+          );
           if (sourceTable) {
             const temp = targetTable.eleve;
             targetTable.eleve = sourceTable.eleve;
@@ -237,45 +199,6 @@ export class PlanComponent implements AfterViewInit {
     this.avatarVisible = false;
     this.draggedTable = null;
     this.tableMoved.emit();
-  }
-
-  isGridOccupied(col: number, row: number, current: any, cellWidth: number, cellHeight: number): boolean {
-    return this.tables.some(t => {
-      if (t === current) return false;
-      const tCol = Math.round(t.x / cellWidth);
-      const tRow = Math.round(t.y / cellHeight);
-      return tCol === col && tRow === row;
-    });
-  }
-
-  getEffectiveHeight(table: any): number {
-    const hasDM = this.getDMCount(table) > 0;
-
-    if (!hasDM) return this.tableSize;
-
-    const dmHeight = 14;
-    const dmMargin = 6;
-    const extraSafety = 4;
-
-    return this.tableSize + dmHeight + dmMargin + extraSafety;
-  }
-
-  isOverlapping(x: number, y: number, current: any): boolean {
-
-    const currentHeight = this.getEffectiveHeight(current);
-
-    return this.tables.some(t => {
-      if (t === current) return false;
-
-      const otherHeight = this.getEffectiveHeight(t);
-
-      return (
-        x < t.x + this.tableSize &&
-        x + this.tableSize > t.x &&
-        y < t.y + otherHeight &&
-        y + currentHeight > t.y
-      );
-    });
   }
 
   onTableClick(table: any) {

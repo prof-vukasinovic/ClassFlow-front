@@ -1,0 +1,27 @@
+<div class="roulette-container">
+
+  <button class="back-button" (click)="goBack()">
+    ← Retour au plan
+  </button>
+
+  <h1>Tirage au sort</h1>
+
+  <div class="wheel">
+    <div class="student-display" *ngIf="selectedStudent; else placeholder">
+      {{ selectedStudent.prenom }} {{ selectedStudent.nom }}
+    </div>
+
+    <ng-template #placeholder>
+      <div class="placeholder">
+        Cliquez sur "Lancer la roulette"
+      </div>
+    </ng-template>
+  </div>
+
+  <button class="spin-button"
+          (click)="spin()"
+          [disabled]="spinning">
+    🎡 Lancer la roulette
+  </button>
+
+</div>

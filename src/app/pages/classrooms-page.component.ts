@@ -44,7 +44,18 @@ export class ClassroomsPageComponent implements OnInit {
     const nom = prompt("Nom de la nouvelle classe ?");
     if (!nom || !nom.trim()) return;
 
-    this.http.post('/api/classrooms', { nom })
+    const cleaned = nom.trim().toLowerCase();
+
+    const alreadyExists = this.classrooms.some((c: any) =>
+      c.nom.trim().toLowerCase() === cleaned
+    );
+
+    if (alreadyExists) {
+      alert("Une classe avec ce nom existe déjà.");
+      return;
+    }
+
+    this.http.post('/api/classrooms', { nom: nom.trim() })
       .subscribe(() => {
         this.loadClasses();
       });
