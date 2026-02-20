@@ -106,15 +106,12 @@ export class StudentDetailComponent implements OnChanges {
 
     if (!this.student) return;
 
-    const classRoomId = Number(this.classRoomId);
-    if (!Number.isFinite(classRoomId)) return;
-
     const label = category === 'BAVARDAGE' ? 'Bavardage' : 'Devoir non fait';
 
     const body = {
       intitule: `[${category}] ${label}`,
       eleveId: this.student.id,
-      classRoomId: classRoomId
+      classRoomId: this.classRoomId
     };
 
     this.http.post('/api/remarques', body)
@@ -137,16 +134,13 @@ export class StudentDetailComponent implements OnChanges {
 
     if (!this.student) return;
 
-    const classRoomId = Number(this.classRoomId);
-    if (!Number.isFinite(classRoomId)) return;
-
     const text = this.newRemarqueText.trim();
     if (!text) return;
 
     const body = {
       intitule: text,
       eleveId: this.student.id,
-      classRoomId: classRoomId
+      classRoomId: this.classRoomId
     };
 
     this.http.post('/api/remarques', body)
@@ -170,9 +164,6 @@ export class StudentDetailComponent implements OnChanges {
 
     if (!this.student) return;
 
-    const classRoomId = Number(this.classRoomId);
-    if (!Number.isFinite(classRoomId)) return;
-
     const cleaned = remarque.intitule.replace(/^\[.*?\]\s*/, '');
     const nouveauTexte = prompt("Modifier la remarque :", cleaned);
     if (!nouveauTexte) return;
@@ -186,8 +177,7 @@ export class StudentDetailComponent implements OnChanges {
 
     const body = {
       intitule: formattedText,
-      eleveId: this.student.id,
-      classRoomId: classRoomId
+      eleveId: this.student.id
     };
 
     this.http.put(`/api/remarques/${remarque.id}`, body)

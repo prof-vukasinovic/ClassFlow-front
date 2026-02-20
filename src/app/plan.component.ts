@@ -29,6 +29,7 @@ export class PlanComponent implements AfterViewInit, OnChanges {
 
   @Output() studentClicked = new EventEmitter<any>();
   @Output() tableMoved = new EventEmitter<void>();
+  @Output() studentsSwapped = new EventEmitter<{ student1: any, student2: any }>();
 
   @ViewChild('planContainer') planContainer!: ElementRef;
 
@@ -76,14 +77,8 @@ export class PlanComponent implements AfterViewInit, OnChanges {
     const effectiveSize = this.tableSize + 18;
 
     this.tables.forEach(t => {
-      let col = Math.floor(t.x / cellWidth);
-      let row = Math.floor(t.y / cellHeight);
-
-      if (!Number.isFinite(col)) col = 0;
-      if (!Number.isFinite(row)) row = 0;
-
-      col = Math.max(0, Math.min(col, this.cols - 1));
-      row = Math.max(0, Math.min(row, this.rows - 1));
+      const col = t.backendRef?.position?.x ?? 0;
+      const row = t.backendRef?.position?.y ?? 0;
 
       t.x = col * cellWidth + (cellWidth - this.tableSize) / 2;
       t.y = row * cellHeight + (cellHeight - effectiveSize) / 2;
@@ -98,9 +93,10 @@ export class PlanComponent implements AfterViewInit, OnChanges {
   }
 
   getBavardageCount(eleve: any): number {
-    if (Array.isArray(eleve?.bavardages)) return eleve.bavardages.length;
     if (!eleve?.remarques) return 0;
-    return eleve.remarques.filter((r: any) => this.getRemarqueCategory(r) === 'BAVARDAGE').length;
+    return eleve.remarques.filter((r: any) =>
+      this.getRemarqueCategory(r) === 'BAVARDAGE'
+    ).length;
   }
 
   getTableColorClass(table: any): string {
@@ -113,10 +109,10 @@ export class PlanComponent implements AfterViewInit, OnChanges {
   }
 
   getDMCount(table: any): number {
-    const eleve = table?.eleve;
-    if (Array.isArray(eleve?.devoirsNonFaits)) return eleve.devoirsNonFaits.length;
-    if (!eleve?.remarques) return 0;
-    return eleve.remarques.filter((r: any) => this.getRemarqueCategory(r) === 'DEVOIR_NON_FAIT').length;
+    if (!table.eleve?.remarques) return 0;
+    return table.eleve.remarques.filter((r: any) =>
+      this.getRemarqueCategory(r) === 'DEVOIR_NON_FAIT'
+    ).length;
   }
 
   getDMBarClass(table: any): string {
@@ -180,15 +176,6 @@ export class PlanComponent implements AfterViewInit, OnChanges {
     col = Math.max(0, Math.min(col, this.cols - 1));
     row = Math.max(0, Math.min(row, this.rows - 1));
 
-    const occupied = this.tables.some(t => {
-      if (t === this.draggedTable) return false;
-      const tCol = Math.floor(t.x / cellWidth);
-      const tRow = Math.floor(t.y / cellHeight);
-      return tCol === col && tRow === row;
-    });
-
-    if (occupied) return;
-
     this.draggedTable.x =
       col * cellWidth + (cellWidth - this.tableSize) / 2;
 
@@ -199,6 +186,8 @@ export class PlanComponent implements AfterViewInit, OnChanges {
   }
 
   onMouseUp(event: MouseEvent) {
+    const movedTable = this.draggedTable;
+
     if (this.studentDragging && this.avatarVisible) {
       const element = document.elementFromPoint(event.clientX, event.clientY);
       const tableEl = element?.closest('.table');
@@ -212,13 +201,33 @@ export class PlanComponent implements AfterViewInit, OnChanges {
           const sourceTable = this.tables.find(t =>
             t.eleve && t.eleve.id === this.studentDragging.id
           );
-          if (sourceTable) {
+
+          if (sourceTable && sourceTable !== targetTable) {
             const temp = targetTable.eleve;
             targetTable.eleve = sourceTable.eleve;
             sourceTable.eleve = temp;
+
+            this.studentsSwapped.emit({
+              student1: sourceTable.eleve,
+              student2: targetTable.eleve
+            });
           }
         }
       }
+    }
+
+    if (movedTable && this.interactionMode === 'table') {
+      const rect = this.planContainer.nativeElement.getBoundingClientRect();
+      const cellWidth = rect.width / this.cols;
+      const cellHeight = rect.height / this.rows;
+
+      const col = Math.floor(movedTable.x / cellWidth);
+      const row = Math.floor(movedTable.y / cellHeight);
+
+      movedTable.backendRef.position.x = col;
+      movedTable.backendRef.position.y = row;
+
+      this.tableMoved.emit();
     }
 
     this.studentDragging = null;
@@ -226,7 +235,6 @@ export class PlanComponent implements AfterViewInit, OnChanges {
     this.draggedTable = null;
 
     this.realignAllTables();
-    this.tableMoved.emit();
   }
 
   onTableClick(table: any) {

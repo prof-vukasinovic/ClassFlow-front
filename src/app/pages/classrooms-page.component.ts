@@ -4,7 +4,6 @@ import { RouterModule, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
-import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-classrooms-page',
@@ -163,7 +162,20 @@ export class ClassroomsPageComponent implements OnInit {
     await firstValueFrom(this.http.post(`/api/classrooms/${classId}/eleves`, { nom, prenom, tableIndex }));
   }
 
-  exportCsv(classroomId: number) {
-    window.location.href = `/api/classrooms/${classroomId}/export-csv`;
+  exportClassroom(classId: number) {
+
+    this.http.get(`/api/classrooms/${classId}/export-csv`, {
+      responseType: 'blob'
+    }).subscribe((blob: Blob) => {
+
+      const url = window.URL.createObjectURL(blob);
+
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `classe_${classId}.csv`;
+      a.click();
+
+      window.URL.revokeObjectURL(url);
+    });
   }
 }

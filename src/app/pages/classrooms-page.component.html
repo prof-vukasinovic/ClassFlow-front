@@ -19,11 +19,12 @@
 
     <button (click)="renameClass(classroom)" style="margin-left:10px;">✏️</button>
 
-    <button (click)="deleteClass(classroom.id)" style="margin-left:5px;">🗑️</button>
+    <button (click)="deleteClass(classroom.id)" style="margin-left:10px;">🗑️</button>
 
-    <button (click)="openImport(classroom)" style="margin-left:5px;">Import 📥</button>
+    <button (click)="openImport(classroom)" style="margin-left:10px;"> Import 📥</button>
+
+    <button (click)="exportClassroom(classroom.id)" style="margin-left:10px;">Export 📤</button>
     
-    <button (click)="exportCsv(classroom.id)" style="margin-left:5px;">Export 📤</button>
   </li>
 </ul>
 

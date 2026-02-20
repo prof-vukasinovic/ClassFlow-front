@@ -11,6 +11,7 @@ import { FormsModule } from '@angular/forms';
 import { PlanComponent } from '../plan.component';
 import { SidebarComponent } from '../sidebar.component';
 import { StudentDetailComponent } from '../student-detail.component';
+import { HostListener } from '@angular/core';
 
 @Component({
   selector: 'app-classroom-detail-page',
@@ -31,6 +32,14 @@ export class ClassroomDetailPageComponent implements OnInit {
   @ViewChild(PlanComponent) planComponent!: PlanComponent;
   @ViewChild('sidebar') sidebar!: SidebarComponent;
 
+  @HostListener('window:resize')
+  onResize() {
+    if (this.planComponent && this.classroom?.uiTables) {
+      this.planComponent.updatePlanSize();
+      this.applyGrid();
+    }
+  }
+
   classroom: any = null;
   selectedStudent: any = null;
   classId: string | null = null;
@@ -40,6 +49,9 @@ export class ClassroomDetailPageComponent implements OnInit {
 
   rows = 5;
   cols = 10;
+
+  tempRows = 5;
+  tempCols = 10;
   tableSize = 80;
 
   remarqueFilter: string = '';
@@ -57,6 +69,8 @@ export class ClassroomDetailPageComponent implements OnInit {
     this.classId = this.route.snapshot.paramMap.get('id');
     this.initCourseDateFromQuery();
     this.loadSavedGrid();
+    this.tempRows = this.rows;
+    this.tempCols = this.cols;
     this.loadSidebarState();
     this.loadClassroom();
   }
@@ -153,11 +167,14 @@ export class ClassroomDetailPageComponent implements OnInit {
         this.loadRemarques();
         this.buildUITables();
 
-        setTimeout(() => {
-          this.applyGrid();
-        }, 0);
-
         this.cdr.detectChanges();
+
+        setTimeout(() => {
+          if (this.planComponent) {
+            this.planComponent.updatePlanSize();
+            this.applyGrid();
+          }
+        });
       });
   }
 
@@ -179,42 +196,8 @@ export class ClassroomDetailPageComponent implements OnInit {
               const d = new Date(r.createdAt);
               return sameLocalDay(d, this.courseDate);
             });
-          } else {
-            e.remarques = [];
           }
-          e.bavardages = [];
-          e.devoirsNonFaits = [];
         });
-
-        this.http.get<any[]>(`/api/classrooms/${this.classId}/bavardages`)
-          .subscribe((items) => {
-            const byEleve = new Map<number, any[]>();
-            for (const it of (items || [])) {
-              const d = new Date(it.createdAt);
-              if (!sameLocalDay(d, this.courseDate)) continue;
-              const k = it.eleveId;
-              byEleve.set(k, [...(byEleve.get(k) || []), it]);
-            }
-            this.classroom.eleves.eleves.forEach((e: any) => {
-              e.bavardages = byEleve.get(e.id) || [];
-            });
-            this.cdr.detectChanges();
-          });
-
-        this.http.get<any[]>(`/api/classrooms/${this.classId}/devoirs-non-faits`)
-          .subscribe((items) => {
-            const byEleve = new Map<number, any[]>();
-            for (const it of (items || [])) {
-              const d = new Date(it.createdAt);
-              if (!sameLocalDay(d, this.courseDate)) continue;
-              const k = it.eleveId;
-              byEleve.set(k, [...(byEleve.get(k) || []), it]);
-            }
-            this.classroom.eleves.eleves.forEach((e: any) => {
-              e.devoirsNonFaits = byEleve.get(e.id) || [];
-            });
-            this.cdr.detectChanges();
-          });
 
         this.cdr.detectChanges();
       });
@@ -240,7 +223,44 @@ export class ClassroomDetailPageComponent implements OnInit {
   }
 
   applyGrid() {
-    if (!this.planComponent || !this.classroom?.uiTables) return;
+    if (!this.classroom?.uiTables) return;
+
+    this.cols = this.tempCols;
+    this.rows = this.tempRows;
+
+    const occupied = new Set<string>();
+
+    for (const t of this.classroom.uiTables) {
+
+      let x = t.backendRef.position.x;
+      let y = t.backendRef.position.y;
+
+      if (x >= this.cols || y >= this.rows || occupied.has(`${x},${y}`)) {
+
+        let placed = false;
+
+        for (let row = 0; row < this.rows; row++) {
+          for (let col = 0; col < this.cols; col++) {
+
+            const key = `${col},${row}`;
+
+            if (!occupied.has(key)) {
+              t.backendRef.position.x = col;
+              t.backendRef.position.y = row;
+              occupied.add(key);
+              placed = true;
+              break;
+            }
+          }
+          if (placed) break;
+        }
+
+      } else {
+        occupied.add(`${x},${y}`);
+      }
+    }
+
+    if (!this.planComponent) return;
 
     this.planComponent.updatePlanSize();
 
@@ -254,24 +274,21 @@ export class ClassroomDetailPageComponent implements OnInit {
 
     this.tableSize = Math.min(cellWidth, cellHeight) - 10;
 
-    this.classroom.uiTables.forEach((t: any) => {
-      const px = Math.max(0, Math.min(this.cols - 1, t.backendRef.position.x));
-      const py = Math.max(0, Math.min(this.rows - 1, t.backendRef.position.y));
+    for (const t of this.classroom.uiTables) {
 
-      t.backendRef.position.x = px;
-      t.backendRef.position.y = py;
+      const px = t.backendRef.position.x;
+      const py = t.backendRef.position.y;
 
       t.x = px * cellWidth + (cellWidth - this.tableSize) / 2;
       t.y = py * cellHeight + (cellHeight - this.tableSize) / 2;
-    });
-
-    this.planComponent.tables = this.classroom.uiTables;
+    }
 
     this.saveGridLocally();
     this.cdr.detectChanges();
   }
 
   saveClassroom() {
+    if (this.interactionMode !== 'table') return;
     if (!this.planComponent || !this.classroom?.uiTables) return;
 
     const width = this.planComponent.planWidth;
@@ -430,6 +447,13 @@ export class ClassroomDetailPageComponent implements OnInit {
         this.sidebarVisible.toString()
       );
     }
+
+    setTimeout(() => {
+      if (this.planComponent && this.classroom?.uiTables) {
+        this.planComponent.updatePlanSize();
+        this.applyGrid();
+      }
+    });
   }
 
   sameLocalDay(a: Date, b: Date): boolean {
@@ -444,5 +468,25 @@ export class ClassroomDetailPageComponent implements OnInit {
 
   isTodayCourse(): boolean {
     return this.sameLocalDay(this.courseDate, new Date());
+  }
+
+  onStudentsSwapped(event: { student1: any, student2: any }) {
+
+    if (!this.classroom?.eleves?.eleves) return;
+
+    const list = this.classroom.eleves.eleves;
+
+    const index1 = list.findIndex((e: any) => e.id === event.student1.id);
+    const index2 = list.findIndex((e: any) => e.id === event.student2.id);
+
+    if (index1 === -1 || index2 === -1) return;
+
+    const temp = list[index1];
+    list[index1] = list[index2];
+    list[index2] = temp;
+
+    this.http
+      .post('/api/classrooms/sauvegarde', this.classroom)
+      .subscribe();
   }
 }
