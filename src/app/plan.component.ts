@@ -6,7 +6,9 @@ import {
   ChangeDetectorRef,
   ElementRef,
   ViewChild,
-  AfterViewInit
+  AfterViewInit,
+  OnChanges,
+  SimpleChanges
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
@@ -17,7 +19,7 @@ import { CommonModule } from '@angular/common';
   templateUrl: './plan.component.html',
   styleUrls: ['./plan.component.css']
 })
-export class PlanComponent implements AfterViewInit {
+export class PlanComponent implements AfterViewInit, OnChanges {
 
   @Input() tables: any[] = [];
   @Input() interactionMode: 'student' | 'table' = 'student';
@@ -47,12 +49,47 @@ export class PlanComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     this.updatePlanSize();
+    this.realignAllTables();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['tables'] || changes['cols'] || changes['rows'] || changes['tableSize']) {
+      setTimeout(() => {
+        this.updatePlanSize();
+        this.realignAllTables();
+      });
+    }
   }
 
   updatePlanSize() {
+    if (!this.planContainer) return;
     const rect = this.planContainer.nativeElement.getBoundingClientRect();
     this.planWidth = rect.width;
     this.planHeight = rect.height;
+  }
+
+  realignAllTables() {
+    if (!this.planWidth || !this.planHeight) return;
+
+    const cellWidth = this.planWidth / this.cols;
+    const cellHeight = this.planHeight / this.rows;
+    const effectiveSize = this.tableSize + 18;
+
+    this.tables.forEach(t => {
+      let col = Math.floor(t.x / cellWidth);
+      let row = Math.floor(t.y / cellHeight);
+
+      if (!Number.isFinite(col)) col = 0;
+      if (!Number.isFinite(row)) row = 0;
+
+      col = Math.max(0, Math.min(col, this.cols - 1));
+      row = Math.max(0, Math.min(row, this.rows - 1));
+
+      t.x = col * cellWidth + (cellWidth - this.tableSize) / 2;
+      t.y = row * cellHeight + (cellHeight - effectiveSize) / 2;
+    });
+
+    this.cdr.detectChanges();
   }
 
   getRemarqueCategory(remarque: any): string {
@@ -61,10 +98,9 @@ export class PlanComponent implements AfterViewInit {
   }
 
   getBavardageCount(eleve: any): number {
+    if (Array.isArray(eleve?.bavardages)) return eleve.bavardages.length;
     if (!eleve?.remarques) return 0;
-    return eleve.remarques.filter((r: any) =>
-      this.getRemarqueCategory(r) === 'BAVARDAGE'
-    ).length;
+    return eleve.remarques.filter((r: any) => this.getRemarqueCategory(r) === 'BAVARDAGE').length;
   }
 
   getTableColorClass(table: any): string {
@@ -77,10 +113,10 @@ export class PlanComponent implements AfterViewInit {
   }
 
   getDMCount(table: any): number {
-    if (!table.eleve?.remarques) return 0;
-    return table.eleve.remarques.filter((r: any) =>
-      this.getRemarqueCategory(r) === 'DEVOIR_NON_FAIT'
-    ).length;
+    const eleve = table?.eleve;
+    if (Array.isArray(eleve?.devoirsNonFaits)) return eleve.devoirsNonFaits.length;
+    if (!eleve?.remarques) return 0;
+    return eleve.remarques.filter((r: any) => this.getRemarqueCategory(r) === 'DEVOIR_NON_FAIT').length;
   }
 
   getDMBarClass(table: any): string {
@@ -89,12 +125,6 @@ export class PlanComponent implements AfterViewInit {
     if (count === 2) return 'dm-orange';
     if (count === 1) return 'dm-yellow';
     return '';
-  }
-
-  getRealTableHeight(table: any): number {
-    const hasDM = this.getDMCount(table) > 0;
-    if (!hasDM) return this.tableSize;
-    return this.tableSize + 18;
   }
 
   onMouseDown(event: MouseEvent, table: any) {
@@ -118,7 +148,6 @@ export class PlanComponent implements AfterViewInit {
   }
 
   onMouseMove(event: MouseEvent) {
-
     if (this.studentDragging) {
       const dx = event.clientX - this.dragStartX;
       const dy = event.clientY - this.dragStartY;
@@ -141,9 +170,9 @@ export class PlanComponent implements AfterViewInit {
     if (this.interactionMode !== 'table') return;
 
     const rect = this.planContainer.nativeElement.getBoundingClientRect();
-
     const cellWidth = rect.width / this.cols;
     const cellHeight = rect.height / this.rows;
+    const effectiveSize = this.tableSize + 18;
 
     let col = Math.floor((event.clientX - rect.left) / cellWidth);
     let row = Math.floor((event.clientY - rect.top) / cellHeight);
@@ -160,19 +189,16 @@ export class PlanComponent implements AfterViewInit {
 
     if (occupied) return;
 
-    const realHeight = this.getRealTableHeight(this.draggedTable);
-
     this.draggedTable.x =
       col * cellWidth + (cellWidth - this.tableSize) / 2;
 
     this.draggedTable.y =
-      row * cellHeight + (cellHeight - realHeight) / 2;
+      row * cellHeight + (cellHeight - effectiveSize) / 2;
 
     this.cdr.detectChanges();
   }
 
   onMouseUp(event: MouseEvent) {
-
     if (this.studentDragging && this.avatarVisible) {
       const element = document.elementFromPoint(event.clientX, event.clientY);
       const tableEl = element?.closest('.table');
@@ -198,6 +224,8 @@ export class PlanComponent implements AfterViewInit {
     this.studentDragging = null;
     this.avatarVisible = false;
     this.draggedTable = null;
+
+    this.realignAllTables();
     this.tableMoved.emit();
   }
 

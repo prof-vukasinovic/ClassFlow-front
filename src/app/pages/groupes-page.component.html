@@ -36,8 +36,6 @@
 
     </div>
 
-    <hr>
-
     <select #selectEleve>
       <option *ngFor="let e of getAvailableStudents()" [value]="e.id">
         {{ e.prenom }} {{ e.nom }}
@@ -46,7 +44,6 @@
 
     <div class="groupe-actions">
       <button (click)="ajouterEleve(groupe, +selectEleve.value)">➕</button>
-      <button (click)="supprimerGroupe(groupe)">🗑️</button>
     </div>
 
   </div>

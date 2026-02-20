@@ -17,6 +17,8 @@ export interface Student {
   remarques: Remarque[];
 }
 
+type Category = 'BAVARDAGE' | 'DEVOIR_NON_FAIT';
+
 @Component({
   selector: 'app-student-detail',
   standalone: true,
@@ -28,16 +30,16 @@ export class StudentDetailComponent implements OnChanges {
 
   @Input() student: Student | null = null;
   @Input() classRoomId!: number;
+  @Input() courseDate: Date | null = null;
+
   @Output() studentDeleted = new EventEmitter<number>();
+  @Output() remarksChanged = new EventEmitter<void>();
 
   newRemarqueText: string = "";
-  selectedCategory: string = "AUTRE";
 
-  categories = [
+  categories: { label: string; value: Category }[] = [
     { label: "Bavardage", value: "BAVARDAGE" },
     { label: "Devoir non fait", value: "DEVOIR_NON_FAIT" },
-    { label: "Oubli matériel", value: "MATERIEL" },
-    { label: "Autre", value: "AUTRE" }
   ];
 
   constructor(private http: HttpClient) {}
@@ -45,7 +47,6 @@ export class StudentDetailComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     if (changes['student']) {
       this.newRemarqueText = "";
-      this.selectedCategory = "AUTRE";
     }
   }
 
@@ -92,45 +93,107 @@ export class StudentDetailComponent implements OnChanges {
     });
   }
 
-  addRemarque() {
-    if (!this.student || !this.newRemarqueText.trim()) return;
+  addCategoryRemarque(category: Category) {
+    const sameLocalDay = (a: Date, b: Date) =>
+      a.getFullYear() === b.getFullYear() &&
+      a.getMonth() === b.getMonth() &&
+      a.getDate() === b.getDate();
 
-    const formattedText =
-      `[${this.selectedCategory}] ${this.newRemarqueText.trim()}`;
+    if (this.courseDate && !sameLocalDay(this.courseDate, new Date())) {
+      alert("Cette remarque ne peut pas être ajoutée car la date ne correspond pas.");
+      return;
+    }
+
+    if (!this.student) return;
+
+    const classRoomId = Number(this.classRoomId);
+    if (!Number.isFinite(classRoomId)) return;
+
+    const label = category === 'BAVARDAGE' ? 'Bavardage' : 'Devoir non fait';
 
     const body = {
-      intitule: formattedText,
-      eleveId: this.student.id
+      intitule: `[${category}] ${label}`,
+      eleveId: this.student.id,
+      classRoomId: classRoomId
+    };
+
+    this.http.post('/api/remarques', body)
+      .subscribe((created: any) => {
+        this.student!.remarques.push(created);
+        this.remarksChanged.emit();
+      });
+  }
+
+  addRemarque() {
+    const sameLocalDay = (a: Date, b: Date) =>
+      a.getFullYear() === b.getFullYear() &&
+      a.getMonth() === b.getMonth() &&
+      a.getDate() === b.getDate();
+
+    if (this.courseDate && !sameLocalDay(this.courseDate, new Date())) {
+      alert("Cette remarque ne peut pas être ajoutée car la date ne correspond pas.");
+      return;
+    }
+
+    if (!this.student) return;
+
+    const classRoomId = Number(this.classRoomId);
+    if (!Number.isFinite(classRoomId)) return;
+
+    const text = this.newRemarqueText.trim();
+    if (!text) return;
+
+    const body = {
+      intitule: text,
+      eleveId: this.student.id,
+      classRoomId: classRoomId
     };
 
     this.http.post('/api/remarques', body)
       .subscribe((created: any) => {
         this.student!.remarques.push(created);
         this.newRemarqueText = "";
-        this.selectedCategory = "AUTRE";
+        this.remarksChanged.emit();
       });
   }
 
   editRemarque(remarque: Remarque) {
+    const sameLocalDay = (a: Date, b: Date) =>
+      a.getFullYear() === b.getFullYear() &&
+      a.getMonth() === b.getMonth() &&
+      a.getDate() === b.getDate();
+
+    if (this.courseDate && !sameLocalDay(this.courseDate, new Date())) {
+      alert("Cette remarque ne peut pas être modifiée car la date ne correspond pas.");
+      return;
+    }
+
     if (!this.student) return;
+
+    const classRoomId = Number(this.classRoomId);
+    if (!Number.isFinite(classRoomId)) return;
 
     const cleaned = remarque.intitule.replace(/^\[.*?\]\s*/, '');
     const nouveauTexte = prompt("Modifier la remarque :", cleaned);
     if (!nouveauTexte) return;
 
     const categoryMatch = remarque.intitule.match(/^\[(.*?)\]/);
-    const category = categoryMatch ? categoryMatch[1] : "AUTRE";
+    const category = categoryMatch ? categoryMatch[1] : "";
 
-    const formattedText = `[${category}] ${nouveauTexte.trim()}`;
+    const formattedText = category
+      ? `[${category}] ${nouveauTexte.trim()}`
+      : nouveauTexte.trim();
 
     const body = {
       intitule: formattedText,
-      eleveId: this.student.id
+      eleveId: this.student.id,
+      classRoomId: classRoomId
     };
 
     this.http.put(`/api/remarques/${remarque.id}`, body)
       .subscribe(() => {
         remarque.intitule = formattedText;
+        this.remarksChanged.emit();
       });
   }
 
@@ -143,12 +206,23 @@ export class StudentDetailComponent implements OnChanges {
   }
 
   deleteForever(remarque: Remarque) {
+    const sameLocalDay = (a: Date, b: Date) =>
+      a.getFullYear() === b.getFullYear() &&
+      a.getMonth() === b.getMonth() &&
+      a.getDate() === b.getDate();
+
+    if (this.courseDate && !sameLocalDay(this.courseDate, new Date())) {
+      alert("Cette remarque ne peut pas être supprimée car la date ne correspond pas.");
+      return;
+    }
+
     if (!this.student) return;
 
     this.http.delete(`/api/remarques/${remarque.id}`)
       .subscribe(() => {
         this.student!.remarques =
           this.student!.remarques.filter(r => r.id !== remarque.id);
+        this.remarksChanged.emit();
       });
   }
 

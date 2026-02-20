@@ -156,8 +156,4 @@ export class GroupesPageComponent implements OnInit {
         this.loadGroupes();
       });
   }
-
-  supprimerGroupe(groupe: any) {
-    this.groupes = this.groupes.filter(g => g !== groupe);
-  }
 }

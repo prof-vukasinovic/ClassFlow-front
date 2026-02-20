@@ -17,15 +17,22 @@
   <li *ngFor="let classroom of classrooms" style="margin-bottom:8px;">
     {{ classroom.nom }}
 
-    <button (click)="renameClass(classroom)" style="margin-left:10px;">
-      ✏️
-    </button>
+    <button (click)="renameClass(classroom)" style="margin-left:10px;">✏️</button>
 
-    <button (click)="deleteClass(classroom.id)" style="margin-left:5px;">
-      🗑️
-    </button>
+    <button (click)="deleteClass(classroom.id)" style="margin-left:5px;">🗑️</button>
+
+    <button (click)="openImport(classroom)" style="margin-left:5px;">Import 📥</button>
+    
+    <button (click)="exportCsv(classroom.id)" style="margin-left:5px;">Export 📤</button>
   </li>
 </ul>
+
+<div *ngIf="importTarget" style="margin-top:15px;">
+  Import CSV dans : {{ importTarget.nom }}<br>
+  <input id="csvInput" type="file" accept=".csv" (change)="onCsvSelected($event)">
+  <button (click)="importCsvIntoClass()">Importer</button>
+  <button (click)="cancelImport()">Annuler</button>
+</div>
 
 <br><br>
 

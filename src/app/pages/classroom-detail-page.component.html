@@ -1,36 +1,44 @@
-<button routerLink="/classrooms">
-  ← Retour aux classes
-</button>
+<div class="top-bar">
 
-<h1 *ngIf="classroom">
-  {{ classroom.nom }}
-</h1>
+  <div class="left-section">
 
-<h2>Plan de classe</h2>
+    <button routerLink="/classrooms" class="back-btn">
+      ← Retour
+    </button>
 
-<button
-  [routerLink]="['/classrooms', classroom?.id, 'groupes']"
-  style="margin-bottom:10px;">
-  👥 Groupes d'élèves
-</button>
+    <div class="titles">
+      <h2 *ngIf="classroom">Classe de {{ classroom.nom }}</h2>
+    </div>
 
-<button
-  [routerLink]="['/classrooms', classroom?.id, 'roulette']"
-  style="margin-left:15px;">
-  🎡 Tirage au sort
-</button>
+    <div class="course-nav">
+      <button (click)="prevCourse()">⬅️</button>
+      <h2>Cours du {{ courseDate | date:'dd/MM/yyyy' }}</h2>
+      <button (click)="nextCourse()">➡️</button>
+    </div>
 
-<button
-  [routerLink]="['/classrooms', classroom?.id, 'zone']"
-  style="margin-left:15px;">
-  🚦 Zone sonore
-</button>
+  </div>
 
-<button
-  style="margin-left:15px;"
-  (click)="toggleSidebar()">
-  {{ sidebarVisible ? '🙈 Masquer les informations des élèves' : '👁️ Afficher les informations élèves' }}
-</button>
+  <div class="actions">
+
+    <button [routerLink]="['/classrooms', classroom?.id, 'groupes']">
+      👥 Groupes
+    </button>
+
+    <button [routerLink]="['/classrooms', classroom?.id, 'roulette']">
+      🎡 Tirage
+    </button>
+
+    <button [routerLink]="['/classrooms', classroom?.id, 'zone']">
+      🚦 Zone
+    </button>
+
+    <button (click)="toggleSidebar()">
+      {{ sidebarVisible ? '🙈 Masquer infos élèves' : '👁️ Afficher infos élèves' }}
+    </button>
+
+  </div>
+
+</div>
 
 <div class="mode-selector">
 
@@ -104,6 +112,7 @@
       *ngIf="selectedStudent"
       [student]="selectedStudent"
       [classRoomId]="classroom?.id"
+      [courseDate]="courseDate"
       (studentDeleted)="onStudentDeleted($event)"
       (remarksChanged)="onRemarksChanged()">
     </app-student-detail>

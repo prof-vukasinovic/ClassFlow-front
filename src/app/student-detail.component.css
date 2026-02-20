@@ -38,3 +38,30 @@
   font-style: italic;
   font-size: 14px;
 }
+
+.student-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.student-header h3 {
+  margin: 0;
+}
+
+.student-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.category-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.category-buttons button.active {
+  font-weight: 600;
+}

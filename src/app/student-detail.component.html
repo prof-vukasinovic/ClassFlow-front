@@ -1,21 +1,26 @@
 <div *ngIf="student" class="detail">
 
-  <h3>{{ student.prenom }} {{ student.nom }}</h3>
+  <div class="student-header">
+    <h3>{{ student.prenom }} {{ student.nom }}</h3>
 
-  <button (click)="deleteStudent()">🗑️</button>
-
-  <button (click)="renameStudent()" style="margin-top:10px;">
-    ✏️
-  </button>
+    <div class="student-header-actions">
+      <button (click)="renameStudent()">✏️</button>
+      <button (click)="deleteStudent()">🗑️</button>
+    </div>
+  </div>
 
   <h4>Remarques</h4>
 
   <div>
-    <select [(ngModel)]="selectedCategory">
-      <option *ngFor="let c of categories" [value]="c.value">
+    <div class="category-buttons">
+      <button
+        type="button"
+        *ngFor="let c of categories"
+        (click)="addCategoryRemarque(c.value)"
+      >
         {{ c.label }}
-      </option>
-    </select>
+      </button>
+    </div>
 
     <input
       [(ngModel)]="newRemarqueText"
