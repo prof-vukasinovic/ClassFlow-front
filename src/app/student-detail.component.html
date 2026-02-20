@@ -13,6 +13,21 @@
 
   <div>
     <div class="category-buttons">
+
+      <div *ngIf="devoirs.length > 0" style="margin-bottom:8px;">
+        <select
+          [(ngModel)]="selectedDevoir"
+          (change)="onDevoirChange()">
+
+          <option [ngValue]="null">-- Choisir un devoir --</option>
+
+          <option *ngFor="let d of devoirs" [ngValue]="d">
+            {{ d }}
+          </option>
+
+        </select>
+      </div>
+
       <button
         type="button"
         *ngFor="let c of categories"

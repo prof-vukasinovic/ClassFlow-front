@@ -36,6 +36,10 @@
       {{ sidebarVisible ? '🙈 Masquer infos élèves' : '👁️ Afficher infos élèves' }}
     </button>
 
+    <button (click)="addDevoir()">
+      ➕ Devoir
+    </button>
+
   </div>
 
 </div>
@@ -114,6 +118,7 @@
       [student]="selectedStudent"
       [classRoomId]="classroom?.id"
       [courseDate]="courseDate"
+      [devoirs]="devoirs"
       (studentDeleted)="onStudentDeleted($event)"
       (remarksChanged)="onRemarksChanged()">
     </app-student-detail>

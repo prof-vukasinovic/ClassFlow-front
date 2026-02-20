@@ -44,6 +44,7 @@ export class ClassroomDetailPageComponent implements OnInit {
   selectedStudent: any = null;
   classId: string | null = null;
   sidebarVisible = true;
+  devoirs: string[] = [];
 
   interactionMode: 'student' | 'table' = 'student';
 
@@ -72,6 +73,7 @@ export class ClassroomDetailPageComponent implements OnInit {
     this.tempRows = this.rows;
     this.tempCols = this.cols;
     this.loadSidebarState();
+    this.loadDevoirs();
     this.loadClassroom();
   }
 
@@ -488,5 +490,36 @@ export class ClassroomDetailPageComponent implements OnInit {
     this.http
       .post('/api/classrooms/sauvegarde', this.classroom)
       .subscribe();
+  }
+
+  loadDevoirs() {
+    if (!this.classId) return;
+
+    const saved = localStorage.getItem(`devoirs_${this.classId}`);
+    if (saved) {
+      this.devoirs = JSON.parse(saved);
+    }
+  }
+
+  addDevoir() {
+    const nom = prompt("Nom du devoir (ex: DM1, Interro2...)");
+    if (!nom) return;
+
+    const trimmed = nom.trim();
+    if (!trimmed) return;
+
+    if (this.devoirs.includes(trimmed)) {
+      alert("Ce devoir existe déjà.");
+      return;
+    }
+
+    this.devoirs.push(trimmed);
+
+    if (this.classId) {
+      localStorage.setItem(
+        `devoirs_${this.classId}`,
+        JSON.stringify(this.devoirs)
+      );
+    }
   }
 }

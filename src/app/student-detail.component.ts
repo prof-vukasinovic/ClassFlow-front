@@ -31,11 +31,13 @@ export class StudentDetailComponent implements OnChanges {
   @Input() student: Student | null = null;
   @Input() classRoomId!: number;
   @Input() courseDate: Date | null = null;
+  @Input() devoirs: string[] = [];
 
   @Output() studentDeleted = new EventEmitter<number>();
   @Output() remarksChanged = new EventEmitter<void>();
 
   newRemarqueText: string = "";
+  selectedDevoir: string | null = null;
 
   categories: { label: string; value: Category }[] = [
     { label: "Bavardage", value: "BAVARDAGE" },
@@ -45,8 +47,13 @@ export class StudentDetailComponent implements OnChanges {
   constructor(private http: HttpClient) {}
 
   ngOnChanges(changes: SimpleChanges) {
+
     if (changes['student']) {
       this.newRemarqueText = "";
+    }
+
+    if (changes['student'] || changes['devoirs']) {
+      this.loadLastSelectedDevoir();
     }
   }
 
@@ -94,6 +101,7 @@ export class StudentDetailComponent implements OnChanges {
   }
 
   addCategoryRemarque(category: Category) {
+
     const sameLocalDay = (a: Date, b: Date) =>
       a.getFullYear() === b.getFullYear() &&
       a.getMonth() === b.getMonth() &&
@@ -106,10 +114,30 @@ export class StudentDetailComponent implements OnChanges {
 
     if (!this.student) return;
 
-    const label = category === 'BAVARDAGE' ? 'Bavardage' : 'Devoir non fait';
+    if (category === 'DEVOIR_NON_FAIT') {
+
+      if (!this.selectedDevoir) {
+        alert("Veuillez sélectionner un devoir.");
+        return;
+      }
+
+      const body = {
+        intitule: `[DEVOIR_NON_FAIT] ${this.selectedDevoir}`,
+        eleveId: this.student.id,
+        classRoomId: this.classRoomId
+      };
+
+      this.http.post('/api/remarques', body)
+        .subscribe((created: any) => {
+          this.student!.remarques.push(created);
+          this.remarksChanged.emit();
+        });
+
+      return;
+    }
 
     const body = {
-      intitule: `[${category}] ${label}`,
+      intitule: `[BAVARDAGE] Bavardage`,
       eleveId: this.student.id,
       classRoomId: this.classRoomId
     };
@@ -226,5 +254,25 @@ export class StudentDetailComponent implements OnChanges {
 
   cleanText(text: string): string {
     return text.replace(/^\[.*?\]\s*/, '');
+  }
+
+  loadLastSelectedDevoir() {
+    if (!this.classRoomId) return;
+
+    const saved = localStorage.getItem(`lastDevoir_${this.classRoomId}`);
+    if (saved && this.devoirs.includes(saved)) {
+      this.selectedDevoir = saved;
+    }
+  }
+
+  onDevoirChange() {
+    if (!this.classRoomId) return;
+
+    if (this.selectedDevoir) {
+      localStorage.setItem(
+        `lastDevoir_${this.classRoomId}`,
+        this.selectedDevoir
+      );
+    }
   }
 }
