@@ -15,6 +15,10 @@ export class RemarkFilterComponent {
 
   filterText: string = '';
 
+  clean(text: string): string {
+    return text.replace(/^\[.*?\]\s*/, '');
+  }
+
   get filtered() {
     if (!this.filterText.trim()) return [];
 
@@ -23,7 +27,7 @@ export class RemarkFilterComponent {
     return this.eleves
       .map(eleve => {
         const matchedRemarques = eleve.remarques?.filter((r: any) =>
-          r.intitule.toLowerCase().includes(lower)
+          this.clean(r.intitule).toLowerCase().includes(lower)
         );
 
         if (matchedRemarques?.length > 0) {

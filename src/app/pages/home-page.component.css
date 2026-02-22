@@ -1,0 +1,51 @@
+.home-container {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f4f6fb, #e9eef5);
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.hero-card {
+  background: white;
+  padding: 45px 60px;
+  border-radius: 18px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+  text-align: center;
+  max-width: 520px;
+  width: 90%;
+}
+
+h1 {
+  font-size: 2.2rem;
+  margin-bottom: 15px;
+  color: #1f2937;
+}
+
+.brand {
+  color: #2563eb;
+}
+
+.subtitle {
+  font-size: 1rem;
+  color: #6b7280;
+  margin-bottom: 30px;
+}
+
+.main-button {
+  display: inline-block;
+  padding: 12px 24px;
+  background: #2563eb;
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+  box-shadow: 0 5px 14px rgba(37, 99, 235, 0.3);
+}
+
+.main-button:hover {
+  background: #1e40af;
+  transform: translateY(-2px);
+}

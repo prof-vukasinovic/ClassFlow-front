@@ -17,6 +17,7 @@
 
     <div
       class="table"
+      [attr.data-table-id]="table.id"
       [ngClass]="getTableColorClass(table)"
       [style.width.px]="tableSize"
       [style.height.px]="tableSize"
@@ -27,21 +28,22 @@
       <div
         class="student-name"
         *ngIf="table.eleve"
+        [style.pointer-events]="interactionMode === 'student' ? 'auto' : 'none'"
         (mousedown)="startStudentDrag(table.eleve, $event)"
       >
         {{ table.eleve.prenom }} {{ table.eleve.nom }}
       </div>
 
-    </div>
-
-    <div
-      class="dm-bar-container"
-      *ngIf="getDMCount(table) > 0"    >
       <div
-        class="dm-bar"
-        [ngClass]="getDMBarClass(table)"
-        [style.width.%]="getDMCount(table) * 33">
+        class="dm-bar-container"
+        *ngIf="getDMCount(table) > 0">
+        <div
+          class="dm-bar"
+          [ngClass]="getDMBarClass(table)"
+          [style.width.%]="getDMCount(table) * 33">
+        </div>
       </div>
+
     </div>
 
   </div>

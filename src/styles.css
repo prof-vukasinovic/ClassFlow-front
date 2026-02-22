@@ -1,6 +1,10 @@
+body {
+  background: #f3f5f9;
+}
+
 html, body {
   height: 100%;
-  margin: 10;
+  margin: 0;
   overflow: hidden;
 }
 

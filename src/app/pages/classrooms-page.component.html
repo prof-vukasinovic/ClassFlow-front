@@ -1,40 +1,95 @@
-<h1>Vos classes</h1>
+<div class="page-wrapper">
 
-<div style="margin-bottom:15px;">
-  <button (click)="createClass()">➕ Ajouter une classe</button>
+  <div class="page-header">
+    <h1>Mes classes</h1>
+
+    <button class="primary-btn" (click)="createClass()">
+      Ajouter une classe
+    </button>
+  </div>
+
+  <div class="class-list">
+
+    <div 
+      class="class-card" 
+      *ngFor="let classroom of classrooms"
+      (click)="goToClass({ target: { value: classroom.id } })"
+    >
+
+      <div class="class-info">
+        <span class="class-name">
+          {{ classroom.nom }}
+        </span>
+      </div>
+
+      <div class="actions" (click)="$event.stopPropagation()">
+
+        <button 
+          class="icon-btn edit" 
+          (click)="renameClass(classroom)"
+          title="Renommer"
+        >
+          ✏️
+        </button>
+
+        <button 
+          class="icon-btn delete" 
+          (click)="deleteClass(classroom.id)"
+          title="Supprimer"
+        >
+          🗑️
+        </button>
+
+        <button 
+          class="secondary-btn" 
+          (click)="openImport(classroom)"
+        >
+          📥 Import
+        </button>
+
+        <button 
+          class="secondary-btn" 
+          (click)="exportClassroom(classroom.id)"
+        >
+          📤 Export
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <div *ngIf="importTarget" class="import-box">
+    <h4>Importer un fichier CSV dans : {{ importTarget.nom }}</h4>
+
+    <input 
+      type="file" 
+      accept=".csv" 
+      (change)="onCsvSelected($event)"
+    >
+
+    <div class="import-actions">
+      <button 
+        class="primary-btn" 
+        (click)="importCsvIntoClass()"
+      >
+        Importer
+      </button>
+
+      <button 
+        class="danger-outline" 
+        (click)="cancelImport()"
+      >
+        Annuler
+      </button>
+    </div>
+  </div>
+
+  <div class="back-section">
+    <button routerLink="/" class="link-btn">
+      ← Retour à l'accueil
+    </button>
+  </div>
+
 </div>
-
-<select (change)="goToClass($event)">
-  <option value="">Choisir une classe</option>
-  <option *ngFor="let classroom of classrooms" [value]="classroom.id">
-    {{ classroom.nom }}
-  </option>
-</select>
-
-<h3>Gérer les classes</h3>
-
-<ul>
-  <li *ngFor="let classroom of classrooms" style="margin-bottom:8px;">
-    {{ classroom.nom }}
-
-    <button (click)="renameClass(classroom)" style="margin-left:10px;">✏️</button>
-
-    <button (click)="deleteClass(classroom.id)" style="margin-left:10px;">🗑️</button>
-
-    <button (click)="openImport(classroom)" style="margin-left:10px;"> Import 📥</button>
-
-    <button (click)="exportClassroom(classroom.id)" style="margin-left:10px;">Export 📤</button>
-    
-  </li>
-</ul>
-
-<div *ngIf="importTarget" style="margin-top:15px;">
-  Import CSV dans : {{ importTarget.nom }}<br>
-  <input id="csvInput" type="file" accept=".csv" (change)="onCsvSelected($event)">
-  <button (click)="importCsvIntoClass()">Importer</button>
-  <button (click)="cancelImport()">Annuler</button>
-</div>
-
-<br><br>
-
-<button routerLink="/">Retour à l'accueil</button>

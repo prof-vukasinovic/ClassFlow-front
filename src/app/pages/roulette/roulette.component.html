@@ -4,18 +4,25 @@
     ← Retour au plan
   </button>
 
-  <h1>Tirage au sort</h1>
+  <h1 class="title">Tirage au sort</h1>
 
-  <div class="wheel">
-    <div class="student-display" *ngIf="selectedStudent; else placeholder">
-      {{ selectedStudent.prenom }} {{ selectedStudent.nom }}
-    </div>
+  <div class="wheel-wrapper">
 
-    <ng-template #placeholder>
-      <div class="placeholder">
-        Cliquez sur "Lancer la roulette"
+    <div class="pointer"></div>
+
+    <div class="wheel" [class.spinning]="spinning">
+
+      <div class="student-display" *ngIf="selectedStudent; else placeholder">
+        {{ selectedStudent.prenom }} {{ selectedStudent.nom }}
       </div>
-    </ng-template>
+
+      <ng-template #placeholder>
+        <div class="placeholder">
+          Cliquez sur "Lancer la roulette"
+        </div>
+      </ng-template>
+
+    </div>
   </div>
 
   <button class="spin-button"

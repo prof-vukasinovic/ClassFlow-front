@@ -275,4 +275,36 @@ export class StudentDetailComponent implements OnChanges {
       );
     }
   }
+
+  isPredefinedRemarque(remarque: Remarque): boolean {
+    return /^\[(BAVARDAGE|DEVOIR_NON_FAIT)\]/.test(remarque.intitule);
+  }
+
+  deleteAllDeleted() {
+
+    if (!this.student) return;
+
+    const confirmed = confirm(
+      "Supprimer définitivement toutes les remarques dans la corbeille ?"
+    );
+
+    if (!confirmed) return;
+
+    const toDelete = [...this.deletedRemarques];
+
+    Promise.all(
+      toDelete.map(remarque =>
+        this.http.delete(`/api/remarques/${remarque.id}`).toPromise()
+      )
+    ).then(() => {
+
+      this.student!.remarques =
+        this.student!.remarques.filter(r => !r.deleted);
+
+      this.remarksChanged.emit();
+
+    }).catch(() => {
+      alert("Une erreur est survenue lors de la suppression.");
+    });
+  }
 }

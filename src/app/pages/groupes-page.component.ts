@@ -58,7 +58,6 @@ export class GroupesPageComponent implements OnInit {
           id: g.id,
           nom: `Groupe ${index + 1}`,
           eleves: g.eleves || [],
-          expanded: true
         }));
 
         this.nombreGroupes = this.groupes.length;
@@ -74,7 +73,6 @@ export class GroupesPageComponent implements OnInit {
       this.groupes.push({
         nom: `Groupe ${i + 1}`,
         eleves: [],
-        expanded: true
       });
     }
   }
@@ -111,11 +109,7 @@ export class GroupesPageComponent implements OnInit {
   retirerEleve(groupe: any, eleve: any) {
     groupe.eleves = groupe.eleves.filter((e: any) => e.id !== eleve.id);
   }
-
-  toggleExpand(groupe: any) {
-    groupe.expanded = !groupe.expanded;
-  }
-
+  
   sauvegarder() {
     if (!this.groupes || this.groupes.length === 0) return;
 

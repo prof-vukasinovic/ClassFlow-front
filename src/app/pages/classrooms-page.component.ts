@@ -9,8 +9,10 @@ import { firstValueFrom } from 'rxjs';
   selector: 'app-classrooms-page',
   standalone: true,
   imports: [CommonModule, RouterModule, FormsModule],
-  templateUrl: './classrooms-page.component.html'
+  templateUrl: './classrooms-page.component.html',
+  styleUrls: ['./classrooms-page.component.css']
 })
+
 export class ClassroomsPageComponent implements OnInit {
 
   classrooms: any[] = [];

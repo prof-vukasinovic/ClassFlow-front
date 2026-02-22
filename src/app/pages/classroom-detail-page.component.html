@@ -1,163 +1,145 @@
-<div class="top-bar">
+<div class="page-wrapper">
 
-  <div class="left-section">
+  <div class="top-bar">
 
-    <button routerLink="/classrooms" class="back-btn">
-      ← Retour
-    </button>
-
-    <div class="titles">
-      <h2 *ngIf="classroom">Classe de {{ classroom.nom }}</h2>
+    <div class="left-section">
+      <button routerLink="/classrooms" class="back-btn">
+        ← Retour
+      </button>
     </div>
 
-    <div class="course-nav">
-      <button (click)="prevCourse()">⬅️</button>
-      <h2>Cours du {{ courseDate | date:'dd/MM/yyyy' }}</h2>
-      <button (click)="nextCourse()">➡️</button>
+    <div class="center-section">
+      <div class="class-course-line" *ngIf="classroom">
+        <span class="class-name">
+          {{ classroom.nom }}
+        </span>
+
+        <span class="separator">:</span>
+
+        <button (click)="prevCourse()" class="nav-btn">◀</button>
+
+        <span class="course-date">
+          {{ courseDate | date:'dd/MM/yyyy' }}
+        </span>
+
+        <button (click)="nextCourse()" class="nav-btn">▶</button>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button [routerLink]="['/classrooms', classroom?.id, 'groupes']">Groupes</button>
+      <button [routerLink]="['/classrooms', classroom?.id, 'roulette']">Tirage</button>
+      <button [routerLink]="['/classrooms', classroom?.id, 'zone']">Zone sonore</button>
     </div>
 
   </div>
 
-  <div class="actions">
+  <div class="mode-selector">
 
-    <button [routerLink]="['/classrooms', classroom?.id, 'groupes']">
-      👥 Groupes
-    </button>
+    <div class="mode-left">
 
-    <button [routerLink]="['/classrooms', classroom?.id, 'roulette']">
-      🎡 Tirage
-    </button>
+      <button
+        class="lock-toggle"
+        [class.locked]="interactionMode === 'student'"
+        [class.unlocked]="interactionMode === 'table'"
+        (click)="toggleLock()">
 
-    <button [routerLink]="['/classrooms', classroom?.id, 'zone']">
-      🚦 Zone
-    </button>
+        {{ interactionMode === 'student'
+            ? 'Tables verrouillées'
+            : 'Tables déverrouillées' }}
 
-    <button (click)="toggleSidebar()">
-      {{ sidebarVisible ? '🙈 Masquer infos élèves' : '👁️ Afficher infos élèves' }}
-    </button>
+      </button>
 
-    <button (click)="addDevoir()">
-      ➕ Devoir
-    </button>
+      <div class="table-modes" *ngIf="interactionMode === 'table'">
 
-  </div>
-
-</div>
-
-<div class="mode-selector">
-
-  <button
-    class="lock-toggle"
-    [class.locked]="interactionMode === 'student'"
-    [class.unlocked]="interactionMode === 'table'"
-    (click)="toggleLock()">
-
-    {{ interactionMode === 'student'
-        ? '🔒 Tables verrouillées'
-        : '🔓 Tables déverrouillées' }}
-
-  </button>
-
-  <div
-    class="table-modes"
-    *ngIf="interactionMode === 'table'">
-
-    <label>
-      Colonnes :
-      <input type="number"
-             [(ngModel)]="tempCols"
-             min="1"
-             style="width:60px">
-    </label>
-
-    <label style="margin-left:10px">
-      Lignes :
-      <input type="number"
-             [(ngModel)]="tempRows"
-             min="1"
-             style="width:60px">
-    </label>
-
-    <button style="margin-left:10px" (click)="applyGrid()">
-      ✔️
-    </button>
-
-  </div>
-
-</div>
-
-<div class="layout" *ngIf="classroom?.uiTables">
-
-  <div class="plan-column">
-
-    <app-plan
-      [tables]="classroom.uiTables"
-      [interactionMode]="interactionMode"
-      [tableSize]="tableSize"
-      [cols]="cols"
-      [rows]="rows"
-      (studentClicked)="selectStudent($event)"
-      (tableMoved)="saveClassroom()"
-      (studentsSwapped)="onStudentsSwapped($event)">
-    </app-plan>
-
-  </div>
-
-  <div class="right-column" *ngIf="sidebarVisible">
-
-    <app-sidebar
-      #sidebar
-      [tables]="classroom.uiTables"
-      [disabled]="interactionMode !== 'student'"
-      (studentSelected)="selectStudent($event)"
-      (addStudent)="openAddStudent($event)">
-    </app-sidebar>
-
-    <app-student-detail
-      *ngIf="selectedStudent"
-      [student]="selectedStudent"
-      [classRoomId]="classroom?.id"
-      [courseDate]="courseDate"
-      [devoirs]="devoirs"
-      (studentDeleted)="onStudentDeleted($event)"
-      (remarksChanged)="onRemarksChanged()">
-    </app-student-detail>
-
-    <div class="remarque-filter">
-
-      <h3>Filtrer par remarque</h3>
-
-      <input
-        type="text"
-        [(ngModel)]="remarqueFilter"
-        placeholder="ex: DM3 non fait">
-
-      <div
-        class="results-box"
-        *ngIf="remarqueFilter.trim()">
-
-        <div *ngIf="filteredResults.length === 0" class="no-result">
-          Aucun résultat
+        <div class="grid-control-inline">
+          <label>Colonnes</label>
+          <input type="number" [(ngModel)]="tempCols" min="1">
         </div>
 
-        <div
-          class="result-item"
-          *ngFor="let result of filteredResults">
-
-          <div class="result-student">
-            {{ result.eleve.prenom }} {{ result.eleve.nom }}
-          </div>
-
-          <ul>
-            <li *ngFor="let r of result.remarques">
-              {{ r.intitule }} —
-              {{ r.createdAt | date:'dd/MM/yyyy HH:mm' }}
-            </li>
-          </ul>
-
+        <div class="grid-control-inline">
+          <label>Lignes</label>
+          <input type="number" [(ngModel)]="tempRows" min="1">
         </div>
+
+        <button (click)="applyGrid()" class="apply-btn">
+          Appliquer
+        </button>
 
       </div>
+
+    </div>
+
+    <div class="mode-right">
+      <button
+        class="secondary-btn"
+        (click)="toggleSidebar()">
+        {{ sidebarVisible ? 'Masquer les informations' : 'Afficher les informations' }}
+      </button>
+    </div>
+
+  </div>
+
+  <div class="layout" *ngIf="classroom?.uiTables">
+
+    <div class="plan-column">
+      <app-plan
+        [tables]="classroom.uiTables"
+        [interactionMode]="interactionMode"
+        [tableSize]="tableSize"
+        [cols]="cols"
+        [rows]="rows"
+        (studentClicked)="selectStudent($event)"
+        (tableMoved)="saveClassroom()"
+        (studentsSwapped)="onStudentsSwapped($event)">
+      </app-plan>
+    </div>
+
+    <div class="right-column" *ngIf="sidebarVisible">
+
+      <div class="top-actions">
+
+        <button
+          class="action-btn secondary"
+          (click)="toggleStudentsList()">
+          Liste des élèves
+        </button>
+
+        <button
+          class="action-btn primary"
+          [disabled]="interactionMode === 'table'"
+          (click)="addStudentDirect()">
+          Ajouter un élève
+        </button>
+
+        <button
+          class="action-btn success"
+          (click)="addDevoir()">
+          Ajouter un devoir
+        </button>
+
+      </div>
+
+      <app-sidebar
+        *ngIf="showStudentsList"
+        [tables]="classroom.uiTables"
+        [disabled]="interactionMode !== 'student'"
+        (studentSelected)="selectStudent($event)">
+      </app-sidebar>
+
+      <app-student-detail
+        *ngIf="selectedStudent"
+        [student]="selectedStudent"
+        [classRoomId]="classroom?.id"
+        [courseDate]="courseDate"
+        [devoirs]="devoirs"
+        (studentDeleted)="onStudentDeleted($event)"
+        (remarksChanged)="onRemarksChanged()">
+      </app-student-detail>
+
+      <app-remark-filter
+        [eleves]="getAllStudents()">
+      </app-remark-filter>
 
     </div>
 

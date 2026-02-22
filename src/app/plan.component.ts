@@ -74,14 +74,13 @@ export class PlanComponent implements AfterViewInit, OnChanges {
 
     const cellWidth = this.planWidth / this.cols;
     const cellHeight = this.planHeight / this.rows;
-    const effectiveSize = this.tableSize + 18;
 
     this.tables.forEach(t => {
       const col = t.backendRef?.position?.x ?? 0;
       const row = t.backendRef?.position?.y ?? 0;
 
       t.x = col * cellWidth + (cellWidth - this.tableSize) / 2;
-      t.y = row * cellHeight + (cellHeight - effectiveSize) / 2;
+      t.y = row * cellHeight + (cellHeight - this.tableSize) / 2;
     });
 
     this.cdr.detectChanges();
@@ -168,7 +167,6 @@ export class PlanComponent implements AfterViewInit, OnChanges {
     const rect = this.planContainer.nativeElement.getBoundingClientRect();
     const cellWidth = rect.width / this.cols;
     const cellHeight = rect.height / this.rows;
-    const effectiveSize = this.tableSize + 18;
 
     let col = Math.floor((event.clientX - rect.left) / cellWidth);
     let row = Math.floor((event.clientY - rect.top) / cellHeight);
@@ -180,7 +178,7 @@ export class PlanComponent implements AfterViewInit, OnChanges {
       col * cellWidth + (cellWidth - this.tableSize) / 2;
 
     this.draggedTable.y =
-      row * cellHeight + (cellHeight - effectiveSize) / 2;
+      row * cellHeight + (cellHeight - this.tableSize) / 2;
 
     this.cdr.detectChanges();
   }

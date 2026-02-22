@@ -1,0 +1,141 @@
+.page-wrapper {
+  padding: 40px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+h1 {
+  margin: 0;
+  color: #1f2937;
+}
+
+.class-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.class-card {
+  background: white;
+  padding: 18px 22px;
+  border-radius: 14px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.class-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.08);
+}
+
+.class-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.class-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
+.primary-btn {
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 9px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: 0.2s ease;
+}
+
+.primary-btn:hover {
+  background: #1e40af;
+}
+
+.secondary-btn {
+  background: #f3f4f6;
+  border: none;
+  padding: 7px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.secondary-btn:hover {
+  background: #e5e7eb;
+}
+
+.icon-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: 0.2s ease;
+}
+
+.icon-btn.edit:hover {
+  color: #2563eb;
+}
+
+.icon-btn.delete:hover {
+  color: #dc2626;
+}
+
+.import-box {
+  margin-top: 30px;
+  padding: 22px;
+  background: white;
+  border-radius: 14px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+}
+
+.import-actions {
+  margin-top: 15px;
+  display: flex;
+  gap: 10px;
+}
+
+.danger-outline {
+  background: transparent;
+  border: 1px solid #dc2626;
+  color: #dc2626;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.danger-outline:hover {
+  background: #dc2626;
+  color: white;
+}
+
+.back-section {
+  margin-top: 40px;
+}
+
+.link-btn {
+  background: none;
+  border: none;
+  color: #2563eb;
+  cursor: pointer;
+  font-weight: 500;
+}

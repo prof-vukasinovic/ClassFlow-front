@@ -1,30 +1,33 @@
-<div style="margin-top:20px">
+<div class="remark-filter">
 
-  <h4>Filtrer par remarque</h4>
+  <div class="filter-title">
+    Filtrer les remarques
+  </div>
 
   <input
     type="text"
     [(ngModel)]="filterText"
-    placeholder="ex: DM3 non fait"
-    style="width:100%; margin-bottom:10px">
+    placeholder="Rechercher une remarque...">
 
-  <div *ngIf="filterText.trim()">
+  <div *ngIf="filterText.trim()" class="filter-results">
 
-    <div *ngIf="filtered.length === 0">
-      Aucun élève trouvé.
+    <div *ngIf="filtered.length === 0" class="no-result">
+      Aucun résultat
     </div>
 
-    <div *ngFor="let item of filtered" style="margin-bottom:10px">
+    <div *ngFor="let item of filtered" class="filter-student">
 
-      <strong>
+      <div class="student-name">
         {{ item.eleve.prenom }} {{ item.eleve.nom }}
-      </strong>
+      </div>
 
-      <ul style="padding-left:18px">
-        <li *ngFor="let r of item.remarques">
-          {{ r.intitule }} — {{ r.createdAt | date:'dd/MM/yyyy HH:mm' }}
-        </li>
-      </ul>
+      <div
+        class="remark-line"
+        *ngFor="let r of item.remarques">
+
+        • {{ clean(r.intitule) }}
+
+      </div>
 
     </div>
 

@@ -12,6 +12,7 @@ import { PlanComponent } from '../plan.component';
 import { SidebarComponent } from '../sidebar.component';
 import { StudentDetailComponent } from '../student-detail.component';
 import { HostListener } from '@angular/core';
+import { RemarkFilterComponent } from '../remark-filter.component';
 
 @Component({
   selector: 'app-classroom-detail-page',
@@ -22,7 +23,8 @@ import { HostListener } from '@angular/core';
     FormsModule,
     PlanComponent,
     SidebarComponent,
-    StudentDetailComponent
+    StudentDetailComponent,
+    RemarkFilterComponent
   ],
   templateUrl: './classroom-detail-page.component.html',
   styleUrls: ['./classroom-detail-page.component.css']
@@ -44,6 +46,7 @@ export class ClassroomDetailPageComponent implements OnInit {
   selectedStudent: any = null;
   classId: string | null = null;
   sidebarVisible = true;
+  showStudentsList = true;
   devoirs: string[] = [];
 
   interactionMode: 'student' | 'table' = 'student';
@@ -333,10 +336,6 @@ export class ClassroomDetailPageComponent implements OnInit {
     this.interactionMode =
       this.interactionMode === 'student' ? 'table' : 'student';
 
-    if (this.sidebar) {
-      this.sidebar.showStudents = false;
-    }
-
     this.selectedStudent = null;
   }
 
@@ -521,5 +520,34 @@ export class ClassroomDetailPageComponent implements OnInit {
         JSON.stringify(this.devoirs)
       );
     }
+  }
+
+  getAllStudents() {
+    if (!this.classroom?.uiTables) return [];
+
+    return this.classroom.uiTables
+      .map((t: any) => t.eleve)
+      .filter((e: any) => e);
+  }
+
+  addStudentDirect() {
+
+    if (!this.classroom) return;
+
+    const prenom = prompt("Prénom de l'élève :");
+    if (!prenom) return;
+
+    const nom = prompt("Nom de l'élève :");
+    if (!nom) return;
+
+    this.openAddStudent({
+      nom: nom.trim(),
+      prenom: prenom.trim()
+    });
+
+  }
+
+  toggleStudentsList() {
+    this.showStudentsList = !this.showStudentsList;
   }
 }

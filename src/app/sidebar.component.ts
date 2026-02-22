@@ -15,24 +15,8 @@ export class SidebarComponent {
   @Input() disabled: boolean = false;
 
   @Output() studentSelected = new EventEmitter<any>();
-  @Output() addStudent = new EventEmitter<{ nom: string; prenom: string }>();
 
-  showStudents = false;
   searchTerm = '';
-
-  showAddForm = false;
-  newNom = '';
-  newPrenom = '';
-
-  toggleStudents() {
-    if (this.disabled) return;
-
-    this.showStudents = !this.showStudents;
-
-    if (!this.showStudents) {
-      this.studentSelected.emit(null);
-    }
-  }
 
   getStudents() {
     return this.tables
@@ -56,16 +40,4 @@ export class SidebarComponent {
     this.studentSelected.emit(eleve);
   }
 
-  submitNewStudent() {
-    if (!this.newNom.trim() || !this.newPrenom.trim()) return;
-
-    this.addStudent.emit({
-      nom: this.newNom.trim(),
-      prenom: this.newPrenom.trim()
-    });
-
-    this.newNom = '';
-    this.newPrenom = '';
-    this.showAddForm = false;
-  }
 }

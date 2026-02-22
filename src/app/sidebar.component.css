@@ -1,39 +1,63 @@
 .sidebar {
-  width: 250px;
+  background: white;
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.05);
+  font-size: 13px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
-button {
-  width: 20%;
+.sidebar-top {
+  display: flex;
+  gap: 6px;
+}
+
+.sidebar-top button {
+  flex: 1;
   padding: 8px;
+  border-radius: 6px;
+  border: none;
+  background: #f3f4f6;
   cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.sidebar-top button:hover {
+  background: #e5e7eb;
 }
 
 .dropdown {
-  margin-top: 10px;
-  max-height: 175px;
-  overflow-y: auto;
-  border: 1px solid #ccc;
-  background: white;
-  padding: 5px;
-}
-
-.dropdown.hidden {
-  display: none;
+  max-height: 250px;
+  overflow-x: hidden;
 }
 
 .student {
-  padding: 6px;
-  border-bottom: 1px solid #eee;
+  padding: 8px 10px;
+  border-radius: 8px;
   cursor: pointer;
+  transition: background 0.15s ease;
 }
 
 .student:hover {
-  background-color: #f2f2f2;
+  background: #f3f4f6;
 }
-
 input {
   width: 100%;
-  padding: 6px;
-  margin-bottom: 5px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  margin-bottom: 6px;
   box-sizing: border-box;
+}
+
+.sidebar input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  font-size: 13px;
+  margin-bottom: 10px;
 }

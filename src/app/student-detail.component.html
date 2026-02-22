@@ -9,40 +9,39 @@
     </div>
   </div>
 
-  <h4>Remarques</h4>
+  <div class="category-row">
 
-  <div>
-    <div class="category-buttons">
+    <select
+      *ngIf="devoirs.length > 0"
+      [(ngModel)]="selectedDevoir"
+      (change)="onDevoirChange()">
 
-      <div *ngIf="devoirs.length > 0" style="margin-bottom:8px;">
-        <select
-          [(ngModel)]="selectedDevoir"
-          (change)="onDevoirChange()">
+      <option [ngValue]="null">Quel devoir ?</option>
 
-          <option [ngValue]="null">-- Choisir un devoir --</option>
+      <option *ngFor="let d of devoirs" [ngValue]="d">
+        {{ d }}
+      </option>
 
-          <option *ngFor="let d of devoirs" [ngValue]="d">
-            {{ d }}
-          </option>
+    </select>
 
-        </select>
-      </div>
+    <button
+      type="button"
+      *ngFor="let c of categories"
+      (click)="addCategoryRemarque(c.value)">
+      {{ c.label }}
+    </button>
 
-      <button
-        type="button"
-        *ngFor="let c of categories"
-        (click)="addCategoryRemarque(c.value)"
-      >
-        {{ c.label }}
-      </button>
-    </div>
+  </div>
 
+  <div class="input-row">
     <input
       [(ngModel)]="newRemarqueText"
       (keyup.enter)="addRemarque()"
       placeholder="Nouvelle remarque">
 
-    <button (click)="addRemarque()">Ajouter</button>
+    <button (click)="addRemarque()">
+      Ajouter
+    </button>
   </div>
 
   <div class="remarques-container">
@@ -52,35 +51,52 @@
     </div>
 
     <div *ngFor="let remarque of activeRemarques" class="remarque">
+
       <div class="intitule">
         {{ cleanText(remarque.intitule) }}
       </div>
 
       <div class="date">
-        {{ remarque.createdAt | date:'dd/MM/yyyy HH:mm' }}
+        {{ remarque.createdAt | date:'HH:mm' }}
       </div>
 
       <div>
-        <button (click)="editRemarque(remarque)">✏️</button>
+        <button
+          *ngIf="!isPredefinedRemarque(remarque)"
+          (click)="editRemarque(remarque)">
+          ✏️
+        </button>
+
         <button (click)="deleteRemarque(remarque)">🗑️</button>
       </div>
+
     </div>
 
   </div>
 
   <h4 *ngIf="deletedRemarques.length > 0">Corbeille</h4>
 
-  <div *ngFor="let remarque of deletedRemarques" class="remarque">
+  <div
+    *ngFor="let remarque of deletedRemarques"
+    class="remarque deleted">
+
     <div class="intitule">
       {{ cleanText(remarque.intitule) }}
     </div>
 
     <div class="date">
-      {{ remarque.createdAt | date:'dd/MM/yyyy HH:mm' }}
+      {{ remarque.createdAt | date:'HH:mm' }}
     </div>
 
-    <button (click)="restore(remarque)">↩️</button>
-    <button (click)="deleteForever(remarque)">Supprimer définitivement</button>
+    <button (click)="restore(remarque)">✖ Annuler</button>
+
   </div>
+
+  <button
+    *ngIf="deletedRemarques.length > 0"
+    class="danger-global"
+    (click)="deleteAllDeleted()">
+    🗑 Supprimer définitivement
+  </button>
 
 </div>
