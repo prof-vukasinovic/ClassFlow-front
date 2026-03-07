@@ -1,0 +1,71 @@
+/* Conteneur sidebar */
+.sidebar{
+	background:#fff;
+	border-radius:14px;
+	padding:14px;
+	box-shadow:0 6px 18px rgba(0,0,0,0.06);
+	font-size:13px;
+	display:flex;
+	flex-direction:column;
+	gap:10px;
+}
+
+/* Zone supérieure */
+.sidebar-top{
+	display:flex;
+	gap:8px;
+}
+
+.sidebar-top button{
+	flex:1;
+	padding:10px 10px;
+	border-radius:10px;
+	border:none;
+	background:#f3f4f6;
+	cursor:pointer;
+	transition:0.2s ease;
+	font-weight:700;
+	color:#111827;
+}
+
+.sidebar-top button:hover{
+	background:#e5e7eb;
+}
+
+/* Champ recherche */
+.sidebar input{
+	width:100%;
+	box-sizing:border-box;
+	padding:10px 12px;
+	border-radius:10px;
+	border:1px solid #d1d5db;
+	font-size:13px;
+	margin-bottom:6px;
+}
+
+.sidebar input:focus{
+	outline:none;
+	border-color:#2563eb;
+	box-shadow:0 0 0 2px rgba(37,99,235,0.2);
+}
+
+/* Liste déroulante */
+.dropdown{
+	max-height:250px;
+	overflow-x:hidden;
+	overflow-y:auto;
+}
+
+/* Élève */
+.student{
+	padding:10px 12px;
+	border-radius:10px;
+	cursor:pointer;
+	transition:background 0.15s ease;
+	font-weight:600;
+	color:#111827;
+}
+
+.student:hover{
+	background:#f3f4f6;
+}

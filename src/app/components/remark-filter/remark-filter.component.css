@@ -1,0 +1,61 @@
+/* Conteneur principal */
+.remark-filter{
+	padding:16px;
+	background:#fff;
+	border-radius:14px;
+	box-shadow:0 6px 18px rgba(0,0,0,0.06);
+	font-size:14px;
+}
+
+/* Titre */
+.filter-title{
+	font-weight:700;
+	margin-bottom:10px;
+	color:#1f2937;
+}
+
+/* Champ de recherche */
+.remark-filter input{
+	width:100%;
+	box-sizing:border-box;
+	padding:10px 12px;
+	border-radius:10px;
+	border:1px solid #d1d5db;
+	font-size:13px;
+	margin-bottom:10px;
+}
+
+.remark-filter input:focus{
+	outline:none;
+	border-color:#2563eb;
+	box-shadow:0 0 0 2px rgba(37,99,235,0.2);
+}
+
+/* Résultats */
+.filter-results{
+	max-height:250px;
+	overflow-y:auto;
+}
+
+/* Nom de l'élève */
+.student-name{
+	font-weight:700;
+	font-size:14px;
+	margin-top:8px;
+	margin-bottom:2px;
+	color:#111827;
+}
+
+/* Ligne de remarque */
+.remark-line{
+	font-size:13px;
+	color:#4b5563;
+	margin-left:6px;
+}
+
+/* Aucun résultat */
+.no-result{
+	font-style:italic;
+	color:#6b7280;
+	font-size:13px;
+}

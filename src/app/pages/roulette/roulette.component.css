@@ -1,118 +1,127 @@
-.roulette-container {
-  min-height: 100vh;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 70px;
-  position: relative;
-  background: radial-gradient(circle at 50% 20%, #c7d2fe, #93c5fd 60%, #60a5fa);
-  transition: background 0.4s ease;
+/* Conteneur principal */
+.roulette-container{
+	min-height:100vh;
+	width:100%;
+	display:flex;
+	flex-direction:column;
+	justify-content:center;
+	align-items:center;
+	gap:70px;
+	position:relative;
+	background:radial-gradient(circle at 50% 20%,#c7d2fe,#93c5fd 60%,#60a5fa);
+	transition:background 0.4s ease;
 }
 
-.back-button {
-  position: absolute;
-  top: 30px;
-  left: 30px;
-  padding: 8px 16px;
-  font-size: 14px;
-  background-color: #ffffff;
-  border: 1px solid #d1d5db;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: 0.2s ease;
-  font-weight: 500;
+/* Bouton retour */
+.back-button{
+	position:absolute;
+	top:30px;
+	left:30px;
+	padding:8px 16px;
+	font-size:14px;
+	background-color:#ffffff;
+	border:1px solid #d1d5db;
+	border-radius:10px;
+	cursor:pointer;
+	transition:0.2s ease;
+	font-weight:500;
 }
 
-.back-button:hover {
-  background-color: #f3f4f6;
+.back-button:hover{
+	background-color:#f3f4f6;
 }
 
-.title {
-  font-size: 36px;
-  font-weight: 800;
-  letter-spacing: 1px;
-  color: #1e293b;
-  text-align: center;
+/* Titre */
+.title{
+	font-size:36px;
+	font-weight:800;
+	letter-spacing:1px;
+	color:#1e293b;
+	text-align:center;
 }
 
-.wheel-wrapper {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+/* Wrapper de la roue */
+.wheel-wrapper{
+	position:relative;
+	display:flex;
+	justify-content:center;
+	align-items:center;
 }
 
-.pointer {
-  position: absolute;
-  top: -18px;
-  width: 0;
-  height: 0;
-  border-left: 22px solid transparent;
-  border-right: 22px solid transparent;
-  border-bottom: 30px solid #1f2937;
-  z-index: 10;
+/* Pointeur */
+.pointer{
+	position:absolute;
+	top:-18px;
+	width:0;
+	height:0;
+	border-left:22px solid transparent;
+	border-right:22px solid transparent;
+	border-bottom:30px solid #1f2937;
+	z-index:10;
 }
 
-.wheel {
-  width: min(70vh, 600px);
-  height: min(70vh, 600px);
-  border-radius: 50%;
-  border: 14px solid #1f2937;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: radial-gradient(circle at 50% 40%, #ffffff 45%, #e2e8f0 100%);
-  box-shadow:
-    inset 0 15px 35px rgba(255,255,255,0.7),
-    0 30px 80px rgba(0,0,0,0.4);
-  transition: transform 2s cubic-bezier(.17,.67,.25,1);
+/* Roue */
+.wheel{
+	width:min(70vh,600px);
+	height:min(70vh,600px);
+	border-radius:50%;
+	border:14px solid #1f2937;
+	display:flex;
+	align-items:center;
+	justify-content:center;
+	background:radial-gradient(circle at 50% 40%,#ffffff 45%,#e2e8f0 100%);
+	box-shadow:
+		inset 0 15px 35px rgba(255,255,255,0.7),
+		0 30px 80px rgba(0,0,0,0.4);
+	transition:transform 2s cubic-bezier(.17,.67,.25,1);
 }
 
-.wheel.spinning {
-  transform: rotate(1620deg);
+.wheel.spinning{
+	transform:rotate(1620deg);
 }
 
-.student-display {
-  font-size: 40px;
-  font-weight: 800;
-  text-align: center;
-  padding: 40px;
-  color: #0f172a;
+/* Affichage élève */
+.student-display{
+	font-size:40px;
+	font-weight:800;
+	text-align:center;
+	padding:40px;
+	color:#0f172a;
 }
 
-.placeholder {
-  font-size: 26px;
-  color: #475569;
-  text-align: center;
-  padding: 40px;
+/* Placeholder */
+.placeholder{
+	font-size:26px;
+	color:#475569;
+	text-align:center;
+	padding:40px;
 }
 
-.spin-button {
-  padding: 18px 45px;
-  font-size: 22px;
-  font-weight: 700;
-  cursor: pointer;
-  border-radius: 16px;
-  border: none;
-  background: linear-gradient(135deg, #2563eb, #1d4ed8);
-  color: white;
-  transition: 0.25s ease;
-  box-shadow: 0 10px 25px rgba(29,78,216,0.4);
+/* Bouton lancer */
+.spin-button{
+	padding:18px 45px;
+	font-size:22px;
+	font-weight:700;
+	cursor:pointer;
+	border-radius:16px;
+	border:none;
+	background:linear-gradient(135deg,#2563eb,#1d4ed8);
+	color:white;
+	transition:0.25s ease;
+	box-shadow:0 10px 25px rgba(29,78,216,0.4);
 }
 
-.spin-button:hover {
-  transform: translateY(-4px) scale(1.07);
-  box-shadow: 0 15px 35px rgba(29,78,216,0.55);
+.spin-button:hover{
+	transform:translateY(-4px) scale(1.07);
+	box-shadow:0 15px 35px rgba(29,78,216,0.55);
 }
 
-.spin-button:active {
-  transform: scale(0.95);
+.spin-button:active{
+	transform:scale(0.95);
 }
 
-.spin-button:disabled {
-  background: #9ca3af;
-  cursor: not-allowed;
-  box-shadow: none;
+.spin-button:disabled{
+	background:#9ca3af;
+	cursor:not-allowed;
+	box-shadow:none;
 }

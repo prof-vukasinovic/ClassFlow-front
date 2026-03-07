@@ -1,34 +1,22 @@
-export interface PositionExport {
-  x: number;
-  y: number;
-}
-
-export interface TableExport {
-  position: PositionExport;
-}
+/**
+ * Modèles utilisés pour l'export des données d'une classe.
+ * L'objectif est de fournir au professeur un récapitulatif
+ * des élèves et de toutes leurs remarques en fin d'année.
+ */
 
 export interface RemarqueExport {
-  id: number;
   intitule: string;
+  type: string;
   createdAt: string;
-  deletedAt?: string;
 }
 
 export interface EleveExport {
-  id: number;
   nom: string;
   prenom: string;
   remarques: RemarqueExport[];
-  table: TableExport | null;
-}
-
-export interface GroupeExport {
-  eleves: EleveExport[];
 }
 
 export interface ClassRoomExport {
-  id: number;
   nom: string;
-  eleves: GroupeExport;
-  tables: TableExport[];
+  eleves: EleveExport[];
 }

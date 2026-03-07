@@ -1,12 +1,14 @@
-.layout {
-  display: flex;
-  gap: 20px;
-  align-items: flex-start;
+/* Layout principal utilisé par certaines pages */
+.layout{
+	display:flex;
+	gap:20px;
+	align-items:flex-start;
 }
 
-.plan-column button {
-  width: 200px;
-  align-self: flex-start;
-  padding: 6px 10px;
-  cursor: pointer;
+/* Boutons placés dans la colonne du plan */
+.plan-column button{
+	width:200px;
+	align-self:flex-start;
+	padding:6px 10px;
+	cursor:pointer;
 }

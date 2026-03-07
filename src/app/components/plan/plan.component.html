@@ -1,0 +1,49 @@
+<!-- Plan interactif de la salle avec tables et élèves -->
+<div
+	#planContainer
+	class="plan"
+	[class.grid-active]="interactionMode==='table'"
+	[style.--cols]="cols"
+	[style.--rows]="rows"
+	(mousemove)="onMouseMove($event)"
+	(mouseup)="onMouseUp($event)">
+
+	<div
+	class="table-wrapper"
+	*ngFor="let table of tables"
+	[style.left.px]="table.x"
+	[style.top.px]="table.y">
+
+		<div
+		class="table"
+		[attr.data-table-id]="table.id"
+		[ngClass]="getTableColorClass(table)"
+		[style.width.px]="tableSize"
+		[style.height.px]="tableSize"
+		(mousedown)="onMouseDown($event,table)"
+		(click)="onTableClick(table)">
+
+			<div
+			class="student-name"
+			*ngIf="table.eleve"
+			[style.pointer-events]="interactionMode==='student'?'auto':'none'">
+				{{table.eleve.prenom}} {{table.eleve.nom}}
+			</div>
+
+			<div
+			class="dm-bar-container"
+			*ngIf="getDMCount(table)>0">
+
+				<div
+				class="dm-bar"
+				[ngClass]="getDMBarClass(table)"
+				[style.width.%]="getDMCount(table)*33">
+				</div>
+
+			</div>
+
+		</div>
+
+	</div>
+
+</div>

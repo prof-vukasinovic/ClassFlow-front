@@ -1,1 +1,34 @@
+<!-- Zone où Angular affiche les pages selon les routes -->
 <router-outlet></router-outlet>
+
+<!-- Bouton flottant d'accès à l'aide -->
+<button class="help-fab" (click)="openHelp()" aria-label="Aide">?</button>
+
+<!-- Fond sombre derrière la fenêtre d'aide -->
+<div class="help-backdrop" *ngIf="helpOpen" (click)="closeHelp()"></div>
+
+<!-- Fenêtre d'aide -->
+<div class="help-modal" *ngIf="helpOpen" role="dialog" aria-modal="true">
+
+  <!-- En-tête -->
+  <div class="help-modal-header">
+    <div class="help-title">Aide</div>
+    <button class="help-close" (click)="closeHelp()" aria-label="Fermer">✕</button>
+  </div>
+
+  <!-- Contenu -->
+  <div class="help-modal-body">
+    <div class="help-text">Télécharger le guide utilisateur (PDF) ?</div>
+  </div>
+
+  <!-- Actions -->
+  <div class="help-modal-actions">
+    <button class="btn-secondary" (click)="closeHelp()">Annuler</button>
+    <a class="btn-primary"
+       href="/docs/ClassFlow_Guide_Utilisateur.pdf"
+       download="ClassFlow_Guide_Utilisateur.pdf">
+      Télécharger
+    </a>
+  </div>
+
+</div>

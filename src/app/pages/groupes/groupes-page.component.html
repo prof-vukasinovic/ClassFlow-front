@@ -1,0 +1,126 @@
+<div class="groupes-container">
+
+	<div class="top-bar">
+		<h1>Groupes</h1>
+
+		<!-- Retour vers le plan de classe -->
+		<button class="back-btn"
+		[routerLink]="['/classrooms',classId]">
+			⬅ Retour au plan
+		</button>
+	</div>
+
+	<!-- Barre d'outils -->
+	<div class="toolbar">
+
+		<div class="toolbar-left">
+
+			<label>
+				Nombre de groupes
+				<input type="number"
+				[(ngModel)]="nombreGroupes"
+				min="1">
+			</label>
+
+			<button
+			(click)="createGroupes()"
+			class="primary">
+				Créer
+			</button>
+
+		</div>
+
+		<div class="toolbar-right">
+
+			<button
+			(click)="repartitionAleatoire()"
+			class="secondary">
+				🎲 Répartition automatique
+			</button>
+
+			<button
+			(click)="supprimerTousLesGroupes()"
+			class="danger">
+				🗑 Supprimer tous les groupes
+			</button>
+
+			<button
+			(click)="sauvegarder()"
+			class="success"
+			[disabled]="!dirty">
+				💾 Sauvegarder
+			</button>
+
+		</div>
+
+	</div>
+
+	<!-- Grille des groupes -->
+	<div class="groupes-grid">
+
+		<div
+		*ngFor="let groupe of groupes;let i=index"
+		class="groupe-card"
+		[style.borderTop]="'5px solid '+couleurs[i%couleurs.length]">
+
+			<div class="groupe-header">
+
+				<h3>{{groupe.nom}}</h3>
+
+				<button
+				class="edit-btn"
+				(click)="renameGroupe(groupe)">
+					✏️
+				</button>
+
+			</div>
+
+			<!-- Liste des élèves -->
+			<div
+			class="groupe-body"
+			[class.collapsed]="!groupe.expanded">
+
+				<div
+				*ngFor="let eleve of groupe.eleves"
+				class="eleve-row">
+
+					<span>
+						{{eleve.prenom}} {{eleve.nom}}
+					</span>
+
+					<button
+					class="danger"
+					(click)="retirerEleve(groupe,eleve)">
+						✕
+					</button>
+
+				</div>
+
+			</div>
+
+			<!-- Ajout d'élève -->
+			<div class="groupe-footer">
+
+				<select #selectEleve>
+
+					<option
+					*ngFor="let e of getAvailableStudents()"
+					[value]="e.id">
+						{{e.prenom}} {{e.nom}}
+					</option>
+
+				</select>
+
+				<button
+				class="primary"
+				(click)="ajouterEleve(groupe,+selectEleve.value)">
+					Ajouter
+				</button>
+
+			</div>
+
+		</div>
+
+	</div>
+
+</div>

@@ -1,0 +1,117 @@
+<div *ngIf="loadingCsv" class="overlay">
+	Import du fichier CSV en cours : {{importProgress}} %
+</div>
+
+<div class="page-wrapper">
+
+	<div class="page-header">
+
+		<h1>Mes classes</h1>
+
+		<button
+		class="primary-btn"
+		(click)="createClass()"
+		[disabled]="loadingCsv">
+
+			Ajouter une classe
+
+		</button>
+
+	</div>
+
+	<div class="class-list">
+
+		<div
+		class="class-card"
+		*ngFor="let classroom of classrooms"
+		(click)="!loadingCsv && goToClass({target:{value:classroom.id}})">
+
+			<div class="class-info">
+				<span class="class-name">
+					{{classroom.nom}}
+				</span>
+			</div>
+
+			<div class="actions" (click)="$event.stopPropagation()">
+
+				<button
+				class="icon-btn edit"
+				(click)="renameClass(classroom)"
+				[disabled]="loadingCsv"
+				title="Renommer">
+					✏️
+				</button>
+
+				<button
+				class="icon-btn delete"
+				(click)="deleteClass(classroom.id)"
+				[disabled]="loadingCsv"
+				title="Supprimer">
+					🗑️
+				</button>
+
+				<button
+				class="secondary-btn"
+				(click)="openImport(classroom)"
+				[disabled]="loadingCsv">
+					📥 Import
+				</button>
+
+				<button
+				class="secondary-btn"
+				(click)="exportClassroom(classroom.id)"
+				[disabled]="loadingCsv">
+					📤 Export
+				</button>
+
+			</div>
+
+		</div>
+
+	</div>
+
+	<div *ngIf="importTarget" class="import-box">
+
+		<h4>
+			Importer un fichier CSV dans : {{importTarget.nom}}
+		</h4>
+
+		<input
+		type="file"
+		accept=".csv"
+		(change)="onCsvSelected($event)"
+		[disabled]="loadingCsv">
+
+		<div *ngIf="loadingCsv">
+			Import en cours : {{importProgress}} %
+		</div>
+
+		<div class="import-actions">
+
+			<button
+			class="primary-btn"
+			(click)="importCsvIntoClass()"
+			[disabled]="loadingCsv||!importFile">
+				Importer
+			</button>
+
+			<button
+			class="danger-outline"
+			(click)="cancelImport()"
+			[disabled]="loadingCsv">
+				Annuler
+			</button>
+
+		</div>
+
+	</div>
+
+	<div class="back-section">
+
+		<button routerLink="/" class="link-btn">
+			← Retour à l'accueil
+		</button>
+
+	</div>
+
+</div>

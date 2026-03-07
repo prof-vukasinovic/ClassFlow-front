@@ -1,34 +1,41 @@
 <div class="roulette-container">
 
-  <button class="back-button" (click)="goBack()">
-    ← Retour au plan
-  </button>
+	<!-- Retour au plan -->
+	<button class="back-button"(click)="goBack()">
+		← Retour au plan
+	</button>
 
-  <h1 class="title">Tirage au sort</h1>
+	<h1 class="title">Tirage au sort</h1>
 
-  <div class="wheel-wrapper">
+	<div class="wheel-wrapper">
 
-    <div class="pointer"></div>
+		<!-- Pointeur -->
+		<div class="pointer"></div>
 
-    <div class="wheel" [class.spinning]="spinning">
+		<!-- Roue -->
+		<div class="wheel"[class.spinning]="spinning">
 
-      <div class="student-display" *ngIf="selectedStudent; else placeholder">
-        {{ selectedStudent.prenom }} {{ selectedStudent.nom }}
-      </div>
+			<!-- Élève sélectionné -->
+			<div class="student-display"*ngIf="selectedStudent;else placeholder">
+				{{selectedStudent.prenom}} {{selectedStudent.nom}}
+			</div>
 
-      <ng-template #placeholder>
-        <div class="placeholder">
-          Cliquez sur "Lancer la roulette"
-        </div>
-      </ng-template>
+			<!-- Message par défaut -->
+			<ng-template #placeholder>
+				<div class="placeholder">
+					Cliquez sur "Lancer la roulette"
+				</div>
+			</ng-template>
 
-    </div>
-  </div>
+		</div>
 
-  <button class="spin-button"
-          (click)="spin()"
-          [disabled]="spinning">
-    🎡 Lancer la roulette
-  </button>
+	</div>
+
+	<!-- Bouton lancement -->
+	<button class="spin-button"
+	(click)="spin()"
+	[disabled]="spinning">
+		🎡 Lancer la roulette
+	</button>
 
 </div>

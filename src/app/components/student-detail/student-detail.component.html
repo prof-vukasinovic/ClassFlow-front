@@ -1,0 +1,113 @@
+<div *ngIf="student" class="detail">
+
+	<div class="student-header">
+
+		<h3>{{student.prenom}} {{student.nom}}</h3>
+
+		<div class="student-header-actions">
+
+			<button (click)="renameStudent()">✏️</button>
+
+			<button (click)="deleteStudent()">🗑️</button>
+
+		</div>
+
+	</div>
+
+	<div class="category-row">
+
+		<select
+		*ngIf="devoirs.length>0"
+		[(ngModel)]="selectedDevoir"
+		(change)="onDevoirChange()">
+
+			<option [ngValue]="null">Quel devoir ?</option>
+
+			<option *ngFor="let d of devoirs" [ngValue]="d">
+				{{d}}
+			</option>
+
+		</select>
+
+		<button
+		type="button"
+		*ngFor="let c of categories"
+		(click)="addCategoryRemarque(c.value)">
+
+			{{c.label}}
+
+		</button>
+
+	</div>
+
+	<div class="input-row">
+
+		<input
+		[(ngModel)]="newRemarqueText"
+		(keyup.enter)="addRemarque()"
+		placeholder="Nouvelle remarque">
+
+		<button (click)="addRemarque()">Ajouter</button>
+
+	</div>
+
+	<div class="remarques-container">
+
+		<div *ngIf="activeRemarques.length===0" class="empty">
+			Aucune remarque
+		</div>
+
+		<div *ngFor="let remarque of activeRemarques" class="remarque">
+
+			<div class="intitule">
+				{{cleanText(remarque.intitule)}}
+			</div>
+
+			<div class="date">
+				{{remarque.createdAt|date:'HH:mm'}}
+			</div>
+
+			<div>
+
+				<button
+				*ngIf="!isPredefinedRemarque(remarque)"
+				(click)="editRemarque(remarque)">
+					✏️
+				</button>
+
+				<button (click)="deleteRemarque(remarque)">🗑️</button>
+
+			</div>
+
+		</div>
+
+	</div>
+
+	<h4 *ngIf="deletedRemarques.length>0">Corbeille</h4>
+
+	<div
+	*ngFor="let remarque of deletedRemarques"
+	class="remarque deleted">
+
+		<div class="intitule">
+			{{cleanText(remarque.intitule)}}
+		</div>
+
+		<div class="date">
+			{{remarque.createdAt|date:'HH:mm'}}
+		</div>
+
+		<button (click)="restore(remarque)">✖ Annuler</button>
+
+	</div>
+
+	<button
+	*ngIf="deletedRemarques.length>0"
+	class="danger-global"
+	(click)="deleteAllDeleted()">
+
+		🗑 Supprimer définitivement
+
+	</button>
+
+</div>

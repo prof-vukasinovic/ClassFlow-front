@@ -1,0 +1,25 @@
+<div class="sidebar">
+
+	<div class="dropdown">
+
+		<input
+		type="text"
+		placeholder="Rechercher..."
+		[(ngModel)]="searchTerm">
+
+		<div
+		class="student"
+		*ngFor="let eleve of filteredStudents()"
+		(click)="selectStudent(eleve)">
+
+			{{eleve.prenom}} {{eleve.nom}}
+
+		</div>
+
+		<div *ngIf="filteredStudents().length===0" class="empty">
+			Aucun élève trouvé
+		</div>
+
+	</div>
+
+</div>

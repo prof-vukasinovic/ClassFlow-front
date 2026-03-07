@@ -1,136 +1,144 @@
-.zone-container {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 40px;
-  position: relative;
-  transition: background-color 0.4s ease;
-  padding: 40px;
+/* Conteneur principal */
+.zone-container{
+	min-height:100vh;
+	display:flex;
+	flex-direction:column;
+	align-items:center;
+	justify-content:center;
+	gap:40px;
+	position:relative;
+	transition:background-color 0.4s ease;
+	padding:40px;
 }
 
-.zone-container.red {
-  background: linear-gradient(180deg, #ff9b9b, #ff7f7f);
+/* Couleurs des zones */
+.zone-container.red{
+	background:linear-gradient(180deg,#ff9b9b,#ff7f7f);
 }
 
-.zone-container.orange {
-  background: linear-gradient(180deg, #ffc878, #ffb347);
+.zone-container.orange{
+	background:linear-gradient(180deg,#ffc878,#ffb347);
 }
 
-.zone-container.green {
-  background: linear-gradient(180deg, #9af0bd, #6edc9f);
+.zone-container.green{
+	background:linear-gradient(180deg,#9af0bd,#6edc9f);
 }
 
-.back-button {
-  position: absolute;
-  left: 20px;
-  top: 20px;
-  padding: 6px 12px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  cursor: pointer;
-  background: white;
-  font-weight: 500;
-  transition: 0.2s ease;
+/* Bouton retour */
+.back-button{
+	position:absolute;
+	left:20px;
+	top:20px;
+	padding:6px 12px;
+	border-radius:8px;
+	border:1px solid #ccc;
+	cursor:pointer;
+	background:white;
+	font-weight:500;
+	transition:0.2s ease;
 }
 
-.back-button:hover {
-  background: #f3f4f6;
+.back-button:hover{
+	background:#f3f4f6;
 }
 
-.traffic-light {
-  width: 220px;
-  padding: 35px;
-  background: #2a2a2a;
-  border-radius: 32px;
-  display: flex;
-  flex-direction: column;
-  gap: 30px;
-  align-items: center;
-  box-shadow: 0 15px 40px rgba(0,0,0,0.35);
+/* Boîtier du feu tricolore */
+.traffic-light{
+	width:220px;
+	padding:35px;
+	background:#2a2a2a;
+	border-radius:32px;
+	display:flex;
+	flex-direction:column;
+	gap:30px;
+	align-items:center;
+	box-shadow:0 15px 40px rgba(0,0,0,0.35);
 }
 
-.light {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  background: #4a4a4a;
-  cursor: pointer;
-  transition: 0.3s ease;
+/* Lampes */
+.light{
+	width:120px;
+	height:120px;
+	border-radius:50%;
+	background:#4a4a4a;
+	cursor:pointer;
+	transition:0.3s ease;
 }
 
-.light.red.active {
-  background: #e74c3c;
-  box-shadow: 0 0 60px rgba(231,76,60,0.9);
+.light.red.active{
+	background:#e74c3c;
+	box-shadow:0 0 60px rgba(231,76,60,0.9);
 }
 
-.light.orange.active {
-  background: #f39c12;
-  box-shadow: 0 0 60px rgba(243,156,18,0.9);
+.light.orange.active{
+	background:#f39c12;
+	box-shadow:0 0 60px rgba(243,156,18,0.9);
 }
 
-.light.green.active {
-  background: #2ecc71;
-  box-shadow: 0 0 60px rgba(46,204,113,0.9);
+.light.green.active{
+	background:#2ecc71;
+	box-shadow:0 0 60px rgba(46,204,113,0.9);
 }
 
-.zone-label {
-  font-size: 32px;
-  font-weight: 700;
-  letter-spacing: 1px;
-  text-align: center;
+/* Texte de la zone */
+.zone-label{
+	font-size:32px;
+	font-weight:700;
+	letter-spacing:1px;
+	text-align:center;
 }
 
-.timer-box {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  background: white;
-  padding: 18px 22px;
-  border-radius: 18px;
-  box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  min-width: 160px;
-  z-index: 1000;
+/* Boîte du minuteur */
+.timer-box{
+	position:fixed;
+	top:20px;
+	right:20px;
+	background:white;
+	padding:18px 22px;
+	border-radius:18px;
+	box-shadow:0 8px 25px rgba(0,0,0,0.2);
+	display:flex;
+	flex-direction:column;
+	align-items:center;
+	gap:10px;
+	min-width:160px;
+	z-index:1000;
 }
 
-.timer-header {
-  font-size: 28px;
+.timer-header{
+	font-size:28px;
 }
 
-.time-display {
-  font-size: 34px;
-  font-weight: 700;
+.time-display{
+	font-size:34px;
+	font-weight:700;
 }
 
-.timer-controls {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+/* Contrôles du minuteur */
+.timer-controls{
+	display:flex;
+	align-items:center;
+	gap:8px;
 }
 
-.timer-controls input {
-  width: 55px;
-  padding: 6px;
-  text-align: center;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  font-weight: 500;
+.timer-controls input{
+	width:55px;
+	padding:6px;
+	text-align:center;
+	border-radius:8px;
+	border:1px solid #ccc;
+	font-weight:500;
 }
 
-.timer-controls button {
-  padding: 6px 10px;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  background: #f1f1f1;
-  transition: 0.2s ease;
+.timer-controls button{
+	padding:6px 10px;
+	border-radius:8px;
+	border:none;
+	cursor:pointer;
+	background:#f1f1f1;
+	transition:0.2s ease;
 }
 
-.timer-controls button:hover {
-  background: #e5e5e5;
+.timer-controls button:hover{
+	background:#e5e5e5;
 }

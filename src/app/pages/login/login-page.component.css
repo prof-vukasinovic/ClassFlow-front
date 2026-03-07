@@ -1,0 +1,143 @@
+.login-wrapper {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f4f6fb, #e9eef5);
+  font-family: 'Segoe UI', sans-serif;
+  padding: 24px;
+}
+
+.card {
+  width: 420px;
+  max-width: 100%;
+  background: white;
+  border-radius: 18px;
+  padding: 34px 34px 30px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(31, 41, 55, 0.08);
+}
+
+.brand-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 14px;
+  margin: -6px 0 18px;
+  border-radius: 14px;
+  background: rgba(37, 99, 235, 0.06);
+  border: 1px solid rgba(37, 99, 235, 0.14);
+}
+
+.brand-logo {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+}
+
+.brand-logo svg {
+  width: 34px;
+  height: 34px;
+  display: block;
+}
+
+.brand-text {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #2563eb;
+  letter-spacing: -0.01em;
+}
+
+.title {
+  font-size: 2rem;
+  margin-bottom: 18px;
+  color: #1f2937;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-align: center;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+label {
+  font-size: 0.9rem;
+  color: #6b7280;
+  font-weight: 600;
+}
+
+input {
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(31, 41, 55, 0.14);
+  outline: none;
+  font-size: 1rem;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.18);
+}
+
+button {
+  margin-top: 10px;
+  padding: 12px 24px;
+  background: #2563eb;
+  color: white;
+  border: 0;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 5px 14px rgba(37, 99, 235, 0.3);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+button:hover {
+  background: #1e40af;
+  transform: translateY(-2px);
+}
+
+button:active {
+  transform: translateY(0px);
+}
+
+button[disabled] {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.error {
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  color: #b00020;
+  background: rgba(176, 0, 32, 0.08);
+  border: 1px solid rgba(176, 0, 32, 0.16);
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: rgba(255, 255, 255, 1);
+  animation: spin 0.75s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

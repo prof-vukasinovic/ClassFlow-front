@@ -1,0 +1,44 @@
+<div class="login-wrapper">
+  <div class="card">
+    <div class="brand-bar">
+      <div class="brand-logo" aria-label="ClassFlow">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+          <rect x="4" y="4" width="56" height="56" rx="14" fill="#2563eb"/>
+          <circle cx="32" cy="24" r="8" fill="white"/>
+          <path d="M18 48 C18 36 46 36 46 48" fill="white"/>
+        </svg>
+      </div>
+      <div class="brand-text">ClassFlow</div>
+    </div>
+
+    <div class="title">Connexion</div>
+
+    <form (ngSubmit)="submit()">
+      <label for="username">Identifiant</label>
+      <input
+        id="username"
+        [(ngModel)]="username"
+        name="username"
+        autocomplete="username"
+        required
+      />
+
+      <label for="password">Mot de passe</label>
+      <input
+        id="password"
+        [(ngModel)]="password"
+        name="password"
+        type="password"
+        autocomplete="current-password"
+        required
+      />
+
+      <div class="error" *ngIf="error">{{ error }}</div>
+
+      <button type="submit" [disabled]="loading">
+        <span class="spinner" *ngIf="loading"></span>
+        {{ loading ? 'Connexion...' : 'Se connecter' }}
+      </button>
+    </form>
+  </div>
+</div>
